@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/util
+      http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--
+    加载配置文件,并为每个配置文件注册一个id,供@Value使用
+    Example:
+        @Value("#{config['config.testname']}")
+    -->
+    <util:properties id="config" location="classpath:conf/config.properties"/>
+    <util:properties id="db" location="classpath:conf/db.properties"/>
+
+</beans>
