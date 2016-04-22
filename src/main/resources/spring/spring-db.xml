@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--数据库配置,此配置指向一个数据库-->
+    <!--Step1. 配置dbcp连接池,生成DataSource[引用的配置参数由spring-props.xml注入]-->
+    <bean id="mysqlDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"
+          p:driverClassName="com.mysql.jdbc.Driver"
+          p:url="#{db['mysql.url']}"
+          p:username="#{db['mysql.user']}"
+          p:password="#{db['mysql.pass']}"
+          p:minIdle="10"
+          p:maxIdle="100"
+          p:initialSize="#{db['mysql.initialSize']}"
+          p:maxActive="#{db['mysql.maxActive']}"
+          p:maxWait="#{db['mysql.maxWait']}"
+          p:defaultAutoCommit="true"
+          p:removeAbandoned="true"
+          p:removeAbandonedTimeout="20"
+          p:logAbandoned="true"
+          p:poolPreparedStatements="true"
+          p:timeBetweenEvictionRunsMillis="7500"
+          p:minEvictableIdleTimeMillis="37500"
+          p:testOnBorrow="false"
+          p:testOnReturn="false"
+          p:testWhileIdle="true"
+          p:validationQuery="SELECT 1"
+            />
+
+    <!--Step2. 配置mybatis,指定xml文件的位置,此步骤使用DataSource-->
+    <bean id="mysqlSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+          p:dataSource-ref="mysqlDataSource"
+          p:mapperLocations="classpath:mapper/*.xml"/>
+
+    <!--Step3. 配置mybatis,指定xml文件对应的dao位置-->
+    <bean id="mysqlMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+          p:basePackage="com.nykj.app.cvvnx1.dao"
+          p:sqlSessionFactoryBeanName="mysqlSqlSessionFactory"/>
+
+
+    <!--
+    第二个数据库配置,此配置指向第二个数据库
+    -->
+    <!--<bean id="mysqlSecondDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"-->
+          <!--p:driverClassName="#{db['mysql.second.driver']}"-->
+          <!--p:url="#{db['mysql.second.url']}"-->
+          <!--p:username="#{db['mysql.second.user']}"-->
+          <!--p:password="#{db['mysql.second.pass']}"-->
+          <!--p:minIdle="10"-->
+          <!--p:maxIdle="100"-->
+          <!--p:initialSize="#{db['mysql.second.initialSize']}"-->
+          <!--p:maxActive="#{db['mysql.second.maxActive']}"-->
+          <!--p:maxWait="#{db['mysql.second.maxWait']}"-->
+          <!--p:defaultAutoCommit="true"-->
+          <!--p:removeAbandoned="true"-->
+          <!--p:removeAbandonedTimeout="20"-->
+          <!--p:logAbandoned="true"-->
+          <!--p:poolPreparedStatements="true"-->
+          <!--p:timeBetweenEvictionRunsMillis="7500"-->
+          <!--p:minEvictableIdleTimeMillis="37500"-->
+          <!--p:testOnBorrow="false"-->
+          <!--p:testOnReturn="false"-->
+          <!--p:testWhileIdle="true"-->
+          <!--p:validationQuery="SELECT 1"-->
+    <!--/>-->
+
+    <!--<bean id="mysqlSecondSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"-->
+          <!--p:dataSource-ref="mysqlSecondDataSource"-->
+          <!--p:mapperLocations="classpath:mapper/*.xml"/>-->
+
+    <!--<bean id="mysqlSecondMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer"-->
+          <!--p:basePackage="com.nykj.app.cvvnx1.dao"-->
+          <!--p:sqlSessionFactoryBeanName="mysqlSecondSqlSessionFactory"/>-->
+
+</beans>

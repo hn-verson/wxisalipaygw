@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nykj.app.cvvnx1.dao.TestMapper">
+    <resultMap id="resultMap" type="com.nykj.app.cvvnx1.model.TestModel">
+        <result column="code" property="code" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+    </resultMap>
+
+    <select id="selectCode" resultType="java.lang.Integer" parameterType="com.nykj.app.cvvnx1.model.TestModel">
+		SELECT 1 as code;
+	</select>
+</mapper>
