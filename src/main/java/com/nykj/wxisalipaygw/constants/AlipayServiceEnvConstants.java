@@ -49,26 +49,26 @@ public class AlipayServiceEnvConstants {
 
 
 
-    public static final String PARTNER           = "2088121475832528";
+    public static final String PARTNER           = "2088221705823174";
 
 
     /** 服务窗appId  */
 
     //TODO !!!! 注：该appId必须设为开发者自己的服务窗id  这里只是个测试id
 
-    public static final String APP_ID            = "2016042101320485";
+    public static final String APP_ID            = "2016042101320522";
 
 
     //开发者请使用openssl生成的密钥替换此处  请看文档：https://fuwu.alipay.com/platform/doc.htm#2-1接入指南
 
-    //TODO !!!! 注：该私钥为测试账号私钥  开发者必须设置自己的私钥 , 否则会存在安全隐患
+    //TODO !!!! 注：该私钥为测试账号私钥  开发者必须设置自己的私钥 , 否则会存在安全隐患 
 
-    public static final String PRIVATE_KEY       = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQLYbxT4GVYQpmCk+4s6edsW5pDbwgjn5UwG8KJDF0wP/McYnoPYb8AD/zyidRZ/7GR3fEcF6jVDGPtyVKGnX5fvuvNgDZDAT8at9C35MKzHJpYnl/B8nP0rQUxFnqrkdoHmTMqx3WBWlGI1jnmT0Or46Wm4PkS0yWBt4RwVYAnAgMBAAECgYBD7HKLiC9hxynMZkTaWb6AFF3ZghJ3TEjHfSQBaL212ESiZR5ha/0NGPmFwudPBfTZkYxUSU2CmrSGq+6wPQz4nLUdqprhipHKVcWSqmDtQdiiktgRZB+HvV8jzNf2K+82PMUsAMeTP8Cq42qGmhQ/40d8DUFmGpcjWdUV1VSQAQJBANiY4QmDhMft1aZFb2CZy24ODCWZCqm+1bn0VAEXkFIKqQjKLTPaEr/RT+gUMRFpWr2ZIeN1hJQnm6SP3yK6MCUCQQDB4xOF3mPYLS1O3N3ep7lbV0S7hjK3IucDaUjsacFBoNTOjNPLkqF6tK33f9On9yyiJWORVKGDhrpOvFP/UedbAkEAl03sXe3+0n7k8XqtvCiTQDUV7SnEliFWQclY6U5hpb4GqLo6627aDB8Wl8OLJ2OWXL3dO3y7eZdVlZZfRG4V9QJAP10gwj090CZjikRwVhXmY82PbuGarXNAoELGTEz7laEkKySnCv6uu1VVDW+/EkObWJpzgclwx3U+agDuSqDPxQJBAMSqldi5ykMI9QvPVbwxK82Gpni3/zeRmqeLRhBBtGtYpDLCK8csKjzH+uFEa248nPzVDeptVbARvm16A3Lq3mY=";
+    public static final String PRIVATE_KEY       = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAPlrc9z148KwYPKcUur/1eVOizOBYjhN6x7BBPLN5w5TJIvBRHSvIWpJe8xA/a+Zu2jBCkib/GSYBf6gCPGVJ+NTqsgeiCl3B0UAIzADVtUNeEW9XFtwYCaLY8ce0PlhryvkHytq4EwgOhjeahlZ5ESS2JLKhPrBrPCnUF3K/T99AgMBAAECgYEAto1V9RCnjhSIMKoH6mYryLSvH5iAKhOllhHSLGBVz988rWlcUEbqHx//kySySLctOuOnQjOhDINUR+QcB62SzdbGtQ3suxgB2JaZIzLRyiRQgjZYpZJUBclxw/nOvw0abRlX5iT2WzyoVXOuU+qyRpe/UhrotBF3YGX9xfIdFcECQQD9Px4fapB3m+c7LixZULCDTTJQy8BtOTyJrJ3uPTYEn8q0WDuQXDTdWJ1f6bcbrEbWjAgXyTXbqi3c75tQqKENAkEA/CGu9OK/FX+36217crS+M7+AHOfQBQGQrGfnd4NFxiNFAiwj0LxlKlfyf6D34xq4s4ffwLTuu/19GRZQbT0cMQJBANOXOe7b1arqCvAKaymQ3npGNKUHKFbZ/Le3Dxlv8UM5016NXe8G63CJSqxJlSE89s7pnxVom2RWsw0m8WkaC70CQQCBVX373HyMuLFNsSGMG68duHQtX7RTfRQLfFk98zbNhrYVgTL2Fk4GxIp+ccH223Q3k9Fxdt6nzEZpogqrnpdhAkBn9p/MVeMgt4RwrV88K/GJ876VEXnSJoVixCT+s4HP9qXoTxH1yP0PamFiiWhEXbQ95R/CZkNPYj+0yuv7c7PG";
 
 
     //TODO !!!! 注：该公钥为测试账号公钥  开发者必须设置自己的公钥 ,否则会存在安全隐患
 
-    public static final String PUBLIC_KEY        = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkC2G8U+BlWEKZgpPuLOnnbFuaQ28II5+VMBvCiQxdMD/zHGJ6D2G/AA/88onUWf+xkd3xHBeo1Qxj7clShp1+X77rzYA2QwE/GrfQt+TCsxyaWJ5fwfJz9K0FMRZ6q5HaB5kzKsd1gVpRiNY55k9Dq+OlpuD5EtMlgbeEcFWAJwIDAQAB";
+    public static final String PUBLIC_KEY        = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD5a3Pc9ePCsGDynFLq/9XlToszgWI4TesewQTyzecOUySLwUR0ryFqSXvMQP2vmbtowQpIm/xkmAX+oAjxlSfjU6rIHogpdwdFACMwA1bVDXhFvVxbcGAmi2PHHtD5Ya8r5B8rauBMIDoY3moZWeREktiSyoT6wazwp1Bdyv0/fQIDAQAB";
 
 
     /**支付宝网关*/
