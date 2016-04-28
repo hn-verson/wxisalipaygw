@@ -8,10 +8,9 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipayMobilePublicMessageCustomSendRequest;
 import com.alipay.api.response.AlipayMobilePublicMessageCustomSendResponse;
 import com.nykj.wxisalipaygw.common.MyException;
-import com.nykj.wxisalipaygw.factory.AlipayAPIClientFactory;
 import com.nykj.wxisalipaygw.util.AlipayMsgBuildUtil;
+import com.nykj.wxisalipaygw.util.AlipayUtil;
 import net.sf.json.JSONObject;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,8 +28,16 @@ public class InAlipayChatTextExecutor implements ActionExecutor {
     /** 业务参数 */
     private JSONObject             bizContent;
 
+    /** 推送消息内容 */
+    private  String content;
+
     public InAlipayChatTextExecutor(JSONObject bizContent) {
         this.bizContent = bizContent;
+    }
+
+    public InAlipayChatTextExecutor(JSONObject bizContent,String content) {
+        this.bizContent = bizContent;
+        this.content = content;
     }
 
     public InAlipayChatTextExecutor() {
@@ -57,9 +64,9 @@ public class InAlipayChatTextExecutor implements ActionExecutor {
                 try {
 
                     // 2.1 构建一个业务响应消息，商户根据自行业务构建，这里只是一个简单的样例
-                    String requestMsg = AlipayMsgBuildUtil.buildSingleImgTextMsg(fromUserId);
+                    String requestMsg = AlipayMsgBuildUtil.buildSingleTextMsg(fromUserId);
 
-                    AlipayClient alipayClient = AlipayAPIClientFactory.getAlipayClient();
+                    AlipayClient alipayClient = AlipayUtil.getAlipayClient();
                     AlipayMobilePublicMessageCustomSendRequest request = new AlipayMobilePublicMessageCustomSendRequest();
                     request.setBizContent(requestMsg);
 

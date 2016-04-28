@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +61,8 @@ public class GatewayServlet {
 
         //1. 解析请求参数
         Map<String, String> params = RequestUtil.getRequestParams(request);
+        String projectBasePath = "http://" + request.getServerName() + request.getContextPath();
+        params.put("projectBasePath",projectBasePath);
 
         //打印本次请求日志，开发者自行决定是否需要
         LogUtil.log("支付宝请求串", params.toString());
@@ -101,7 +102,6 @@ public class GatewayServlet {
                 alipayApiException.printStackTrace();
             }
         }
-//        return "true";
         return responseMsg;
     }
 

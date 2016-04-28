@@ -67,6 +67,23 @@ public class AlipayMsgBuildUtil {
     }
 
     /**
+     * 构造单发纯文本消息
+     *
+     * @param fromUserId
+     * @return
+     */
+    public static String buildSingleTextMsg(String fromUserId,String content) {
+
+        StringBuilder sb = new StringBuilder();
+
+        //构建json格式单发纯文本消息体： 所有内容开发者请根据自有业务自行设置响应值，这里只是个样例
+        sb.append("{'msgType':'text','text':{'"+content+"':'这是纯文本消息'}, 'toUserId':'" + fromUserId
+                + "'}");
+
+        return sb.toString();
+    }
+
+    /**
      * 构造群发纯文本消息
      * 
      * @return

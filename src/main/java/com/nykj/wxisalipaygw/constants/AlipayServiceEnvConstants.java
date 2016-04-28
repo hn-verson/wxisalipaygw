@@ -15,7 +15,7 @@ package com.nykj.wxisalipaygw.constants;
 
  * 支付宝服务窗环境常量（demo中常量只是参考，需要修改成自己的常量值）
 
- * 
+ *
 
  * @author taixu.zqq
 
@@ -45,31 +45,30 @@ public class AlipayServiceEnvConstants {
 
     public static final String SIGN_TYPE         = "RSA";
 
-    
 
-    
 
-    public static final String PARTNER           = "2088302104513991";
+
+
+    public static final String PARTNER           = "2088121475832528";
 
 
     /** 服务窗appId  */
 
     //TODO !!!! 注：该appId必须设为开发者自己的服务窗id  这里只是个测试id
 
-    public static final String APP_ID            = "2016042101320449";
+    public static final String APP_ID            = "2016042101320485";
 
 
     //开发者请使用openssl生成的密钥替换此处  请看文档：https://fuwu.alipay.com/platform/doc.htm#2-1接入指南
 
-    //TODO !!!! 注：该私钥为测试账号私钥  开发者必须设置自己的私钥 , 否则会存在安全隐患 
+    //TODO !!!! 注：该私钥为测试账号私钥  开发者必须设置自己的私钥 , 否则会存在安全隐患
 
-//    public static final String PRIVATE_KEY       = "MIICXQIBAAKBgQDFIUM4MWCHZ08volqtO/1QRYhvZsg1qjXONo38/UMuuvOyRCG75JSSBdG/vwuwpjxd2s54xQIfioNy1TVCXPcfOw5oNBbD58IjKRYt0UXQGfLuOAc5mdDL3K+XGU/OwIlYRZTxR2zu1NwNHH2udWb+51f42zUTGvo0tpumfmVqUwIDAQABAoGBAJdhJrSFPoJcdDO5MnbrpWg6LT6XKFIFppH31OudNTUyfae8qEcYjnrgGyVrOTfrQFo2h+24JBxCixTo46BVsbKhuQ8ociI5UIWyRaazh4FYgrvD2cJwoZ6Qnqkpi5DZddul6cUJIK62cx4OHdnQrwdMfu39CPkdd2M5DqqG8nApAkEA6ElVfg8O1CF5So3gljP+fqxvqbXxtHsFFUmeZka52IgLow36oUfu3WX1WptgnBENIn+wzKEvG2+/sSAtWrqClwJBANlBIk87GF4O1khW/GbRzYl94zGnqDyP4uWrF1NVxwShLg36KwXEMKLF7S9v/DbgXqhvLUu7CEJgwfYI01BVmaUCQQCOMF3B5YvJNJhfl8uThk5R0lIkC7jiJq/s4PyyVLbsohKlhCgYU8UXB5OSHCyePB3TMWDTUhNY8yXfUfgRYrwPAkAA8CoQw4WQamn8d/uxCfjkPhnsDfhJAqoNKdb48ibg2z1SrCDhbn5zRX2HtekV55QhEBHXAODBQJ+1y0X2U9hNAkAB4SG/BWgh1+qfrw4I6DrKhYEIz8YyfBpbKl6MljG8c1Ui/dHOenMfNKeyXSHmW9QgI2B5eJJuBykNwEs7JxZ6";
-    public static final String PRIVATE_KEY       = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMUhQzgxYIdnTy+iWq07/VBFiG9myDWqNc42jfz9Qy6687JEIbvklJIF0b+/C7CmPF3aznjFAh+Kg3LVNUJc9x87Dmg0FsPnwiMpFi3RRdAZ8u44BzmZ0Mvcr5cZT87AiVhFlPFHbO7U3A0cfa51Zv7nV/jbNRMa+jS2m6Z+ZWpTAgMBAAECgYEAl2EmtIU+glx0M7kyduulaDotPpcoUgWmkffU6501NTJ9p7yoRxiOeuAbJWs5N+tAWjaH7bgkHEKLFOjjoFWxsqG5DyhyIjlQhbJFprOHgViCu8PZwnChnpCeqSmLkNl126XpxQkgrrZzHg4d2dCvB0x+7f0I+R13YzkOqobycCkCQQDoSVV+Dw7UIXlKjeCWM/5+rG+ptfG0ewUVSZ5mRrnYiAujDfqhR+7dZfVam2CcEQ0if7DMoS8bb7+xIC1auoKXAkEA2UEiTzsYXg7WSFb8ZtHNiX3jMaeoPI/i5asXU1XHBKEuDforBcQwosXtL2/8NuBeqG8tS7sIQmDB9gjTUFWZpQJBAI4wXcHli8k0mF+Xy5OGTlHSUiQLuOImr+zg/LJUtuyiEqWEKBhTxRcHk5IcLJ48HdMxYNNSE1jzJd9R+BFivA8CQADwKhDDhZBqafx3+7EJ+OQ+GewN+EkCqg0p1vjyJuDbPVKsIOFufnNFfYe16RXnlCEQEdcA4MFAn7XLRfZT2E0CQAHhIb8FaCHX6p+vDgjoOsqFgQjPxjJ8GlsqXoyWMbxzVSL90c56cx80p7JdIeZb1CAjYHl4km4HKQ3ASzsnFno=";
+    public static final String PRIVATE_KEY       = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKQLYbxT4GVYQpmCk+4s6edsW5pDbwgjn5UwG8KJDF0wP/McYnoPYb8AD/zyidRZ/7GR3fEcF6jVDGPtyVKGnX5fvuvNgDZDAT8at9C35MKzHJpYnl/B8nP0rQUxFnqrkdoHmTMqx3WBWlGI1jnmT0Or46Wm4PkS0yWBt4RwVYAnAgMBAAECgYBD7HKLiC9hxynMZkTaWb6AFF3ZghJ3TEjHfSQBaL212ESiZR5ha/0NGPmFwudPBfTZkYxUSU2CmrSGq+6wPQz4nLUdqprhipHKVcWSqmDtQdiiktgRZB+HvV8jzNf2K+82PMUsAMeTP8Cq42qGmhQ/40d8DUFmGpcjWdUV1VSQAQJBANiY4QmDhMft1aZFb2CZy24ODCWZCqm+1bn0VAEXkFIKqQjKLTPaEr/RT+gUMRFpWr2ZIeN1hJQnm6SP3yK6MCUCQQDB4xOF3mPYLS1O3N3ep7lbV0S7hjK3IucDaUjsacFBoNTOjNPLkqF6tK33f9On9yyiJWORVKGDhrpOvFP/UedbAkEAl03sXe3+0n7k8XqtvCiTQDUV7SnEliFWQclY6U5hpb4GqLo6627aDB8Wl8OLJ2OWXL3dO3y7eZdVlZZfRG4V9QJAP10gwj090CZjikRwVhXmY82PbuGarXNAoELGTEz7laEkKySnCv6uu1VVDW+/EkObWJpzgclwx3U+agDuSqDPxQJBAMSqldi5ykMI9QvPVbwxK82Gpni3/zeRmqeLRhBBtGtYpDLCK8csKjzH+uFEa248nPzVDeptVbARvm16A3Lq3mY=";
 
 
     //TODO !!!! 注：该公钥为测试账号公钥  开发者必须设置自己的公钥 ,否则会存在安全隐患
 
-    public static final String PUBLIC_KEY        = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFIUM4MWCHZ08volqtO/1QRYhvZsg1qjXONo38/UMuuvOyRCG75JSSBdG/vwuwpjxd2s54xQIfioNy1TVCXPcfOw5oNBbD58IjKRYt0UXQGfLuOAc5mdDL3K+XGU/OwIlYRZTxR2zu1NwNHH2udWb+51f42zUTGvo0tpumfmVqUwIDAQAB";
+    public static final String PUBLIC_KEY        = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkC2G8U+BlWEKZgpPuLOnnbFuaQ28II5+VMBvCiQxdMD/zHGJ6D2G/AA/88onUWf+xkd3xHBeo1Qxj7clShp1+X77rzYA2QwE/GrfQt+TCsxyaWJ5fwfJz9K0FMRZ6q5HaB5kzKsd1gVpRiNY55k9Dq+OlpuD5EtMlgbeEcFWAJwIDAQAB";
 
 
     /**支付宝网关*/
