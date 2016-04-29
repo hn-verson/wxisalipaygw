@@ -7,10 +7,10 @@ package com.nykj.wxisalipaygw.executor;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipayMobilePublicMessageCustomSendRequest;
 import com.alipay.api.response.AlipayMobilePublicMessageCustomSendResponse;
-import com.nykj.wxisalipaygw.common.MyException;
-import com.nykj.wxisalipaygw.util.AlipayMsgBuildUtil;
+import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.util.AlipayUtil;
 import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,26 +22,20 @@ import java.util.concurrent.Executors;
  */
 public class InAlipayChatTextExecutor implements ActionExecutor {
 
+    private static final Logger LOGGER = Logger.getLogger(InAlipayChatTextExecutor.class);
+
     /** 线程池 */
     private static ExecutorService executors = Executors.newSingleThreadExecutor();
 
     /** 业务参数 */
-    private JSONObject             bizContent;
+    private JSONObject alipayBizBody;
 
-    /** 推送消息内容 */
-    private  String content;
+    /** 响应参数 **/
+    private JSONObject alipayResponseBody;
 
-    public InAlipayChatTextExecutor(JSONObject bizContent) {
-        this.bizContent = bizContent;
-    }
-
-    public InAlipayChatTextExecutor(JSONObject bizContent,String content) {
-        this.bizContent = bizContent;
-        this.content = content;
-    }
-
-    public InAlipayChatTextExecutor() {
-        super();
+    public InAlipayChatTextExecutor(JSONObject alipayBizBody,JSONObject alipayResponseBody) {
+        this.alipayBizBody = alipayBizBody;
+        this.alipayResponseBody = alipayResponseBody;
     }
 
     /**
@@ -49,13 +43,14 @@ public class InAlipayChatTextExecutor implements ActionExecutor {
      * @see ActionExecutor#execute()
      */
     @Override
-    public String execute() throws MyException {
-
-        //取得发起请求的支付宝账号id
-        final String fromUserId = bizContent.getString("FromUserId");
+    public String execute() throws Exception {
 
         //1. 首先同步构建ACK响应
-        String syncResponseMsg = AlipayMsgBuildUtil.buildBaseAckMsg(fromUserId);
+        String syncResponseMsg = AlipayUtil.buildBaseAckMsg(alipayBizBody);
+
+        final String fromUserId = alipayBizBody.getString("FromAlipayUserId");
+
+        final UnitLink unitLink = (UnitLink)alipayBizBody.get("unit_link");
 
         //2. 异步发送消息
         executors.execute(new Runnable() {
@@ -63,10 +58,10 @@ public class InAlipayChatTextExecutor implements ActionExecutor {
             public void run() {
                 try {
 
-                    // 2.1 构建一个业务响应消息，商户根据自行业务构建，这里只是一个简单的样例
-                    String requestMsg = AlipayMsgBuildUtil.buildSingleTextMsg(fromUserId);
+                    // 2.1 构建一个业务响应消息
+                    String requestMsg = AlipayUtil.buildSingleTextMsg(fromUserId,alipayResponseBody.getString("content"));
 
-                    AlipayClient alipayClient = AlipayUtil.getAlipayClient();
+                    AlipayClient alipayClient = AlipayUtil.getAlipayClient(unitLink);
                     AlipayMobilePublicMessageCustomSendRequest request = new AlipayMobilePublicMessageCustomSendRequest();
                     request.setBizContent(requestMsg);
 
@@ -75,15 +70,14 @@ public class InAlipayChatTextExecutor implements ActionExecutor {
                         .execute(request);
 
                     // 2.3 商户根据响应结果处理结果
-                    //这里只是简单的打印，请商户根据实际情况自行进行处理
                     if (null != response && response.isSuccess()) {
-                        System.out.println("异步发送成功，结果为：" + response.getBody());
+                        LOGGER.info("异步发送成功，结果为：" + response.getBody());
                     } else {
-                        System.out.println("异步发送失败 code=" + response.getCode() + "msg："
+                        LOGGER.info("异步发送失败 code=" + response.getCode() + "msg："
                                            + response.getMsg());
                     }
                 } catch (Exception e) {
-                    System.out.println("异步发送失败");
+                    LOGGER.info("异步发送失败");
                 }
             }
         });

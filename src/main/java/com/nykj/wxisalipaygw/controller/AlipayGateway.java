@@ -2,15 +2,20 @@
  * Alipay.com Inc.
  * Copyright (c) 2004-2014 All Rights Reserved.
  */
-package com.nykj.wxisalipaygw.controller.gateway;
+package com.nykj.wxisalipaygw.controller;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.nykj.wxisalipaygw.constants.AlipayServiceEnvConstants;
 import com.nykj.wxisalipaygw.dispatcher.Dispatcher;
+import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.executor.ActionExecutor;
-import com.nykj.wxisalipaygw.util.LogUtil;
+import com.nykj.wxisalipaygw.util.AlipayUtil;
 import com.nykj.wxisalipaygw.util.RequestUtil;
+import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,12 +34,16 @@ import java.util.Map;
  * @version $Id: GatewayServlet.java, v 0.1 2014年7月22日 下午5:59:55 taixu.zqq Exp $
  */
 @Controller
-public class GatewayServlet {
+@Scope("prototype")
+@RequestMapping("/alipay")
+public class AlipayGateway {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1210436705188940602L;
+
+    private final static Logger LOGGER = Logger.getLogger(AlipayGateway.class);
+
+    @Autowired
+    private RequestUtil requestUtil;
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse)
@@ -56,68 +65,53 @@ public class GatewayServlet {
     public String doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException,
             IOException {
-        //支付宝响应消息  
-        String responseMsg = "";
-
-        //1. 解析请求参数
-        Map<String, String> params = RequestUtil.getRequestParams(request);
-        String projectBasePath = "http://" + request.getServerName() + request.getContextPath();
-        params.put("projectBasePath",projectBasePath);
-
-        //打印本次请求日志，开发者自行决定是否需要
-        LogUtil.log("支付宝请求串", params.toString());
-
+        Map<String,String> params = null;
+        JSONObject alipayBizBody = null;
+        JSONObject alipayResponseBody = null;
+        UnitLink unitLink = null;
+        String responseMsg = null;
         try {
-            //2. 验证签名
-            this.verifySign(params);
+            //将原生参数解析成Map
+            params = requestUtil.getRequestParams(request);
+            LOGGER.info("支付宝请求业务体:"+ params);
 
-            //3. 获取业务执行器   根据请求中的 service, msgType, eventType, actionParam 确定执行器
-            ActionExecutor executor = Dispatcher.getExecutor(params);
+            //1. 根据请求信息组装业务体
+            alipayBizBody = requestUtil.buildAlipayBizBody(request);
+
+            //2. 验证签名
+            AlipayUtil.verifySign(params,alipayBizBody);
+
+            //3. 获取业务执行器
+            alipayResponseBody = new JSONObject();
+            ActionExecutor executor = Dispatcher.getExecutor(alipayBizBody,alipayResponseBody);
 
             //4. 执行业务逻辑
             responseMsg = executor.execute();
 
-        } catch (AlipayApiException alipayApiException) {
-            //开发者可以根据异常自行进行处理
-            alipayApiException.printStackTrace();
-
-        } catch (Exception exception) {
-            //开发者可以根据异常自行进行处理
-            exception.printStackTrace();
-
+        } catch (AlipayApiException e) {
+            LOGGER.error("应用网关执行异常:" + e);
+        } catch (Exception e) {
+            LOGGER.error("应用网关执行异常:" + e);
         } finally {
             //5. 响应结果加签及返回
             try {
+                JSONObject unitLinkJsonObj = (JSONObject) alipayBizBody.get("unit_link");
+                unitLink = (UnitLink)JSONObject.toBean(unitLinkJsonObj,UnitLink.class);
                 //对响应内容加签
+                /*responseMsg = AlipaySignature.encryptAndSign(responseMsg,
+                        unitLink.getSrv_token(),
+                        unitLink.getApp_secret(), AlipayServiceEnvConstants.CHARSET,
+                        false, true);*/
                 responseMsg = AlipaySignature.encryptAndSign(responseMsg,
                         AlipayServiceEnvConstants.ALIPAY_PUBLIC_KEY,
                         AlipayServiceEnvConstants.PRIVATE_KEY, AlipayServiceEnvConstants.CHARSET,
                         false, true);
-
-                //开发者自行决定是否要记录，视自己需求
-                LogUtil.log("开发者响应串", responseMsg);
-
-            } catch (AlipayApiException alipayApiException) {
-                //开发者可以根据异常自行进行处理
-                alipayApiException.printStackTrace();
+                LOGGER.info("响应结果加签内容:" + responseMsg);
+            } catch (Exception e) {
+                LOGGER.error("响应结果加签失败:" + e);
             }
         }
         return responseMsg;
-    }
-
-    /**
-     * 验签
-     *
-     * @param
-     * @return
-     */
-    private void verifySign(Map<String, String> params) throws AlipayApiException {
-
-        if (!AlipaySignature.rsaCheckV2(params, AlipayServiceEnvConstants.ALIPAY_PUBLIC_KEY,
-                AlipayServiceEnvConstants.SIGN_CHARSET)) {
-
-            throw new AlipayApiException("verify sign fail.");
-        }
     }
 
 }

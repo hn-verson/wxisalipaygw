@@ -17,7 +17,7 @@ import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.nykj.wxisalipaygw.entity.alipay.BaseRequest;
 import com.nykj.wxisalipaygw.entity.alipay.BaseResponse;
 import com.nykj.wxisalipaygw.service.alipay.UserInfoService;
-import com.nykj.wxisalipaygw.util.UtilDate;
+import com.nykj.wxisalipaygw.util.DateUtil;
 
 @Controller
 @RequestMapping("/alipay")
@@ -45,10 +45,10 @@ public class UserInfoController {
                 
                 baseResponse.setMessage("转换成功");
                 baseResponse.setData(data);
-                baseResponse.setTime(UtilDate.getDateFormatter());
+                baseResponse.setTime(DateUtil.getCurTime());
             } else {
                 baseResponse.setMessage("参数错误");
-                baseResponse.setTime(UtilDate.getDateFormatter());
+                baseResponse.setTime(DateUtil.getCurTime());
             }
         } catch (Exception e) {
             LOGGER.error("支付宝转换openId异常：" + e);
@@ -70,10 +70,10 @@ public class UserInfoController {
                 AlipayUserUserinfoShareResponse userinfoShareResponse = userInfoService.getAlipayUserInfo(unitId, authCode);
                 baseResponse.setMessage("获取成功");
                 baseResponse.setData(userinfoShareResponse);
-                baseResponse.setTime(UtilDate.getDateFormatter());
+                baseResponse.setTime(DateUtil.getCurTime());
             } else {
                 baseResponse.setMessage("参数错误");
-                baseResponse.setTime(UtilDate.getDateFormatter());
+                baseResponse.setTime(DateUtil.getCurTime());
             }
         } catch (Exception e) {
             LOGGER.error("支付宝获取用户信息异常：" + e);
