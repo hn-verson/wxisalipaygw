@@ -6,6 +6,7 @@ import com.nykj.wxisalipaygw.entity.alipay.AutoReply;
 import com.nykj.wxisalipaygw.entity.alipay.UserQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,7 +17,17 @@ public class UserQuestionService {
     @Autowired
     private UserQuestionMapper userQuestionMapper;
 
-    public Integer insertUserQuestion(UserQuestion userQuestion){
+    /**
+     * 持久化用户提问信息
+     * @param unitId
+     * @param content
+     * @return
+     */
+    public Integer insertUserQuestion(String unitId,String content){
+        UserQuestion userQuestion = new UserQuestion();
+        userQuestion.setUnitId(unitId);
+        userQuestion.setUserQuestion(content);
+        userQuestion.setCreateTime(new Date());
         return userQuestionMapper.insertUserQuestion(userQuestion);
     }
 

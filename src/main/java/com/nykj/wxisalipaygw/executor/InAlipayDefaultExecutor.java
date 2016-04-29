@@ -4,8 +4,7 @@
  */
 package com.nykj.wxisalipaygw.executor;
 
-import com.nykj.wxisalipaygw.common.MyException;
-import com.nykj.wxisalipaygw.util.AlipayMsgBuildUtil;
+import com.nykj.wxisalipaygw.util.AlipayUtil;
 import net.sf.json.JSONObject;
 
 /**
@@ -17,14 +16,10 @@ import net.sf.json.JSONObject;
 public class InAlipayDefaultExecutor implements ActionExecutor {
 
     /** 业务参数 */
-    private JSONObject bizContent;
+    private JSONObject alipayBizBody;
 
-    public InAlipayDefaultExecutor(JSONObject bizContent) {
-        this.bizContent = bizContent;
-    }
-
-    public InAlipayDefaultExecutor() {
-        super();
+    public InAlipayDefaultExecutor(JSONObject alipayBizBody) {
+        this.alipayBizBody = alipayBizBody;
     }
 
     /**
@@ -32,11 +27,7 @@ public class InAlipayDefaultExecutor implements ActionExecutor {
      * @see ActionExecutor#execute()
      */
     @Override
-    public String execute() throws MyException {
-
-        //取得发起请求的支付宝账号id
-        final String fromUserId = bizContent.getString("FromUserId");
-
-        return AlipayMsgBuildUtil.buildBaseAckMsg(fromUserId);
+    public String execute() throws Exception {
+        return AlipayUtil.buildBaseAckMsg(alipayBizBody);
     }
 }

@@ -4,9 +4,6 @@
  */
 package com.nykj.wxisalipaygw.executor;
 
-
-import com.nykj.wxisalipaygw.common.MyException;
-
 /**
  * 业务执行接口
  * 
@@ -19,6 +16,6 @@ public interface ActionExecutor {
      * 业务执行方法
      * @return
      */
-    public String execute() throws MyException;
+    public String execute() throws Exception;
 
 }

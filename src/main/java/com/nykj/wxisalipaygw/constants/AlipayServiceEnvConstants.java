@@ -80,4 +80,7 @@ public class AlipayServiceEnvConstants {
 
     public static final String GRANT_TYPE        = "authorization_code";
 
+    /** 文本格式 **/
+    public static final String FORMAT            = "json";
+
 }

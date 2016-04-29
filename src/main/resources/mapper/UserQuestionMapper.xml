@@ -2,16 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nykj.wxisalipaygw.dao.alipay.UserQuestionMapper">
 
-    <resultMap id="UserQuestionMap" type="com.nykj.wxisalipaygw.entity.alipay.UserQuestion">
-        <result column="id" property="id" jdbcType="VARCHAR" javaType="java.lang.Integer"/>
-        <result column="channel" property="channel" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="unit_id" property="unit_id" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="user_question" property="user_question" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="create_time" property="create_time" jdbcType="TIMESTAMP" javaType="java.lang.Date"/>
-        <result column="start_time" property="start_time" jdbcType="VARCHAR" javaType="java.lang.String"/>
-        <result column="end_time" property="end_time" jdbcType="VARCHAR" javaType="java.lang.String"/>
-    </resultMap>
-
     <!-- 存储用户问题 -->
     <insert id="insertUserQuestion" parameterType="com.nykj.wxisalipaygw.entity.alipay.UserQuestion" >
         INSERT INTO weixin_user_question ( unit_id, user_question, create_time)
