@@ -153,7 +153,6 @@ public class AlipayService {
             AlipaySystemOauthTokenRequest oauthTokenRequest = new AlipaySystemOauthTokenRequest();
             oauthTokenRequest.setCode(alipayBizBody.getString("auth_code"));
             JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
-            String openId = null;
             UnitLink unitLink = (UnitLink) JSONObject.toBean(unitLinkJson,UnitLink.class);
             oauthTokenRequest.setGrantType(AlipayConstants.GRANT_TYPE);
             AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
@@ -169,27 +168,14 @@ public class AlipayService {
                 userinfoShareResponse = alipayClient.execute(userinfoShareRequest, oauthTokenResponse.getAccessToken());
                 //成功获得用户信息
                 if(userinfoShareResponse != null && userinfoShareResponse.isSuccess()){
-                    openId = userinfoShareResponse.getAlipayUserId();
-                    AlipayMobilePublicGisGetRequest gisGetRequest = new AlipayMobilePublicGisGetRequest();
-                    JSONObject gisReqJson = new JSONObject();
-                    gisReqJson.put("userId",openId);
-                    gisGetRequest.setBizContent(gisReqJson.toString());
-                    AlipayMobilePublicGisGetResponse gisGetResponse = null ;
-                    gisGetResponse = alipayClient.execute(gisGetRequest);
-                    //成功获得用户地理位置
-                    if(gisGetResponse != null && gisGetResponse.isSuccess()){
-                        alipayUserInfo = new AlipayUserInfo();
-                        alipayUserInfo.setAvatar(userinfoShareResponse.getAvatar());
-                        alipayUserInfo.setNickName(userinfoShareResponse.getNickName());
-                        alipayUserInfo.setProvince(userinfoShareResponse.getProvince());
-                        alipayUserInfo.setCity(userinfoShareResponse.getCity());
-                        alipayUserInfo.setGender(userinfoShareResponse.getGender());
-                        alipayUserInfo.setUserTypeValue(userinfoShareResponse.getUserTypeValue());
-                        alipayUserInfo.setOpenId(userinfoShareResponse.getAlipayUserId());
-
-                        alipayUserInfo.setLongitude(gisGetResponse.getLongitude());
-                        alipayUserInfo.setLatitude(gisGetResponse.getLatitude());
-                    }
+                    alipayUserInfo = new AlipayUserInfo();
+                    alipayUserInfo.setAvatar(userinfoShareResponse.getAvatar());
+                    alipayUserInfo.setNickName(userinfoShareResponse.getNickName());
+                    alipayUserInfo.setProvince(userinfoShareResponse.getProvince());
+                    alipayUserInfo.setCity(userinfoShareResponse.getCity());
+                    alipayUserInfo.setGender(userinfoShareResponse.getGender());
+                    alipayUserInfo.setUserTypeValue(userinfoShareResponse.getUserTypeValue());
+                    alipayUserInfo.setOpenId(userinfoShareResponse.getAlipayUserId());
                 }
             }
         } catch (AlipayApiException e) {
@@ -197,6 +183,33 @@ public class AlipayService {
         }
 
         return alipayUserInfo;
+    }
+
+    /**
+     * 获取用户地理位置信息
+     * @param alipayBizBody
+     * @return
+     * @throws Exception
+     */
+    public String getUserGisInfo(JSONObject alipayBizBody) throws Exception{
+        JSONObject gisJson = new JSONObject();
+        JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
+        String openId = alipayBizBody.getString("open_id");
+        UnitLink unitLink = (UnitLink) JSONObject.toBean(unitLinkJson,UnitLink.class);
+        AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
+
+        AlipayMobilePublicGisGetRequest gisGetRequest = new AlipayMobilePublicGisGetRequest();
+        JSONObject gisReqJson = new JSONObject();
+        gisReqJson.put("userId",openId);
+        gisGetRequest.setBizContent(gisReqJson.toString());
+        AlipayMobilePublicGisGetResponse gisGetResponse = null ;
+        gisGetResponse = alipayClient.execute(gisGetRequest);
+        if(gisGetResponse != null && gisGetResponse.isSuccess()){
+            gisJson.put("longitude",gisGetResponse.getLongitude());
+            gisJson.put("latitude",gisGetResponse.getLatitude());
+        }
+
+        return gisJson.toString();
     }
 
     /**

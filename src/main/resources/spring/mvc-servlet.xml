@@ -21,29 +21,11 @@
     </bean>
 
     <!-- 请求拦截器 -->
-    <!--<mvc:interceptors>-->
-        <!--<mvc:interceptor>-->
-            <!--<mvc:mapping path="/**"/>-->
-            <!--<mvc:exclude-mapping path="/admin/**"/>-->
-            <!--<bean class="com.nykj.app.cvvnx1.controller.interceptor.SecurityInterceptor"/>-->
-        <!--</mvc:interceptor>-->
-    <!--</mvc:interceptors>-->
-
-    <!--&lt;!&ndash;资源文件路径申明,表明不需要经过springMVC处理的资源文件,如js/css&ndash;&gt;-->
-    <!--<mvc:resources mapping="/assets/**" location="/assets/"/>-->
-
-    <!-- 指定可接受的提交编码及类型 -->
-    <!--<mvc:annotation-driven>-->
-        <!--<mvc:message-converters>-->
-            <!--<bean class="org.springframework.http.converter.StringHttpMessageConverter">-->
-                <!--<property name="supportedMediaTypes">-->
-                    <!--<list>-->
-                        <!--<value>text/plain;charset=UTF-8</value>-->
-                        <!--<value>text/html;charset=UTF-8</value>-->
-                    <!--</list>-->
-                <!--</property>-->
-            <!--</bean>-->
-        <!--</mvc:message-converters>-->
-    <!--</mvc:annotation-driven>-->
+  	<mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/alipay/**"/>
+            <bean class="com.nykj.wxisalipaygw.controller.interceptor.Wxish5Interceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

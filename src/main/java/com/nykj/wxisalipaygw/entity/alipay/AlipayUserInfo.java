@@ -18,10 +18,6 @@ public class AlipayUserInfo {
     private String userTypeValue;
     /*用户标识*/
     private String openId;
-    /*经度*/
-    private String longitude;
-    /*纬度*/
-    private String latitude;
 
     public String getAvatar() {
         return avatar;
@@ -79,19 +75,4 @@ public class AlipayUserInfo {
         this.openId = openId;
     }
 
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
 }

@@ -57,9 +57,7 @@ public class AlipayGateway extends BaseController {
     @ResponseBody
     public String alipayCallBack(@PathVariable(value = "channel") String channel,
                                  @PathVariable(value = "unit_id") String unitId,
-                                 HttpServletRequest request)
-            throws ServletException,
-            IOException {
+                                 HttpServletRequest request) {
         Map<String,String> params = null;
         JSONObject alipayBizBody = null;
         String responseMsg = null;
