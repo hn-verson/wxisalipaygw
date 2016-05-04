@@ -1,8 +1,6 @@
 package com.nykj.wxisalipaygw.entity.alipay;
 
-import com.nykj.wxisalipaygw.entity.BaseEntity;
-
-public class UnitLink extends BaseEntity {
+public class UnitLink {
 	
 	private String id;
 	private String unit_id;

@@ -1,4 +1,4 @@
-package com.nykj.wxisalipaygw.dao.alipay;
+package com.nykj.wxisalipaygw.model.alipay;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

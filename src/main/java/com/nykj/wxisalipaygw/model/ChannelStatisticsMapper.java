@@ -1,4 +1,4 @@
-package com.nykj.wxisalipaygw.dao;
+package com.nykj.wxisalipaygw.model;
 
 import com.nykj.wxisalipaygw.entity.ChannelStatistics;
 import org.springframework.stereotype.Repository;

@@ -1,7 +1,7 @@
 package com.nykj.wxisalipaygw.service;
 
-import com.nykj.wxisalipaygw.dao.ChannelSceneMapper;
-import com.nykj.wxisalipaygw.dao.ChannelStatisticsMapper;
+import com.nykj.wxisalipaygw.model.ChannelSceneMapper;
+import com.nykj.wxisalipaygw.model.ChannelStatisticsMapper;
 import com.nykj.wxisalipaygw.entity.ChannelScene;
 import com.nykj.wxisalipaygw.entity.ChannelStatistics;
 import net.sf.json.JSONObject;
@@ -24,10 +24,12 @@ public class ChannelService {
     @Autowired
     private ChannelSceneMapper channelSceneMapper;
 
-    public Integer insertChannelStatistics(String unitId,JSONObject bizContentJson){
-        JSONObject actionParam = JSONObject.fromObject(bizContentJson.getString("ActionParam"));
-        JSONObject scene = JSONObject.fromObject(actionParam.get("scene"));
-        String sceneId = scene.getString("sceneId");
+    public Integer insertChannelStatistics(JSONObject alipayBizBody) throws Exception{
+        String unitId = alipayBizBody.getString("unit_id");
+        JSONObject bizContentJson = (JSONObject) alipayBizBody.get("biz_content");
+        JSONObject actionParam = bizContentJson.has("ActionParam") ? (JSONObject)bizContentJson.get("ActionParam") : null;
+        JSONObject scene = (actionParam == null ? null : (JSONObject)actionParam.get("scene"));
+        String sceneId = (scene == null ? null : scene.getString("sceneId"));
 
         //判断医院对应的场景值是否存在
         ChannelScene channelScene = new ChannelScene();

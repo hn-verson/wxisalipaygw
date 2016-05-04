@@ -1,9 +1,8 @@
 package com.nykj.wxisalipaygw.entity.alipay;
-import com.nykj.wxisalipaygw.entity.BaseEntity;
 
 import java.util.Date;
 
-public class UserQuestion extends BaseEntity
+public class UserQuestion
 {
 	private String id;
 	private String channel;

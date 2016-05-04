@@ -1,4 +1,4 @@
-package com.nykj.wxisalipaygw.dao.alipay;
+package com.nykj.wxisalipaygw.model.alipay;
 
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import org.apache.ibatis.annotations.Param;

@@ -1,8 +1,6 @@
-package com.nykj.wxisalipaygw.dao;
+package com.nykj.wxisalipaygw.model;
 
 import com.nykj.wxisalipaygw.entity.ChannelScene;
-
-import java.util.List;
 
 /**
  * Created by Verson on 2016/4/28.

@@ -38,7 +38,7 @@
 
     <!--Step3. 配置mybatis,指定xml文件对应的dao位置-->
     <bean id="mysqlMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer"
-          p:basePackage="com.nykj.wxisalipaygw.dao"
+          p:basePackage="com.nykj.wxisalipaygw.model"
           p:sqlSessionFactoryBeanName="mysqlSqlSessionFactory"/>
 
 </beans>

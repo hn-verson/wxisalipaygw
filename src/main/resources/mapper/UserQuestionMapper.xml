@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nykj.wxisalipaygw.dao.alipay.UserQuestionMapper">
+<mapper namespace="com.nykj.wxisalipaygw.model.alipay.UserQuestionMapper">
 
     <!-- 存储用户问题 -->
     <insert id="insertUserQuestion" parameterType="com.nykj.wxisalipaygw.entity.alipay.UserQuestion" >
         INSERT INTO weixin_user_question ( unit_id, user_question, create_time)
-        VALUES(#{unit_id},#{user_question},#{create_time});
+        VALUES(#{unitId},#{userQuestion},#{createTime});
     </insert>
 
     <!-- 获取自动回复列表(by unit_id) -->

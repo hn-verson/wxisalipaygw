@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nykj.wxisalipaygw.dao.ChannelStatisticsMapper">
+<mapper namespace="com.nykj.wxisalipaygw.model.ChannelStatisticsMapper">
 
     <!-- 存储渠道统计信息(关注、扫码) -->
     <insert id="insertChannelStatistics" parameterType="com.nykj.wxisalipaygw.entity.ChannelStatistics" >

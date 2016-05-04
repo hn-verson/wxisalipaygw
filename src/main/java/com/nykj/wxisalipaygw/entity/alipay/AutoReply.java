@@ -1,8 +1,6 @@
 package com.nykj.wxisalipaygw.entity.alipay;
 
-import com.nykj.wxisalipaygw.entity.BaseEntity;
-
-public class AutoReply extends BaseEntity
+public class AutoReply
 {
 	private String id;
 	private String unit_id;
