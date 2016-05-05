@@ -4,6 +4,7 @@ import com.nykj.wxisalipaygw.model.ChannelSceneMapper;
 import com.nykj.wxisalipaygw.model.ChannelStatisticsMapper;
 import com.nykj.wxisalipaygw.entity.ChannelScene;
 import com.nykj.wxisalipaygw.entity.ChannelStatistics;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,12 @@ public class ChannelService {
     public Integer insertChannelStatistics(JSONObject alipayBizBody) throws Exception{
         String unitId = alipayBizBody.getString("unit_id");
         JSONObject bizContentJson = (JSONObject) alipayBizBody.get("biz_content");
-        JSONObject actionParam = bizContentJson.has("ActionParam") ? (JSONObject)bizContentJson.get("ActionParam") : null;
-        JSONObject scene = (actionParam == null ? null : (JSONObject)actionParam.get("scene"));
+        Object actionParamObj = bizContentJson.has("ActionParam") ? bizContentJson.get("ActionParam") : null;
+        if(actionParamObj == null || actionParamObj instanceof JSONArray){
+            return -1;
+        }
+        JSONObject actionParamJson = bizContentJson.has("ActionParam") ? (JSONObject)actionParamObj : null;
+        JSONObject scene = (actionParamJson == null ? null : (JSONObject)actionParamJson.get("scene"));
         String sceneId = (scene == null ? null : scene.getString("sceneId"));
 
         //判断医院对应的场景值是否存在

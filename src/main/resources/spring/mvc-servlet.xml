@@ -23,7 +23,7 @@
     <!-- 请求拦截器 -->
   	<mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/alipay/**"/>
+            <mvc:mapping path="/gateway/wxish5/**"/>
             <bean class="com.nykj.wxisalipaygw.controller.interceptor.Wxish5Interceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
