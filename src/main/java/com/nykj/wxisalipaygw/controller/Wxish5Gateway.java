@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -30,8 +31,9 @@ public class Wxish5Gateway extends BaseController {
     @Autowired
     private UnitInfoService unitInfoService;
 
-    @RequestMapping(value = "/wxish5", method = RequestMethod.POST)
-    public void handler(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "/wxish5", method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String handler(HttpServletRequest request, HttpServletResponse response){
         Map<String,String> paramMap = getRequestParams(request);
         JSONObject verifyResultJson = null;
         JSONObject responseMsgJson = null;
@@ -39,10 +41,10 @@ public class Wxish5Gateway extends BaseController {
         response.setContentType("application/json;charset=UTF-8");
 
         try{
+            LOGGER.info("接收WXISH5请求:" + paramMap.toString());
             verifyResultJson = paramsVerify(paramMap);
             if(verifyResultJson.has("code") && verifyResultJson.getInt("code") == Wxish5Constants.API_ACESS_FAILER_FLAG){
-                printClient(response,verifyResultJson.toString());
-                return;
+                return verifyResultJson.toString();
             }
 
             bizBodyJson = buildBizBody(paramMap);
@@ -58,17 +60,18 @@ public class Wxish5Gateway extends BaseController {
             }else{
                 responseMsgJson.put("code",1);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
-                printClient(response,responseMsgJson.toString());
-                return;
+                return responseMsgJson.toString();
             }
             responseMsgJson.put("code",0);
             responseMsgJson.put("message","成功");
-            printClient(response,responseMsgJson.toString());
+            return responseMsgJson.toString();
         }catch (Exception e){
             LOGGER.error("网关处理异常:" + e);
             responseMsgJson.put("code",1);
             responseMsgJson.put("message","处理异常:" + e);
-            printClient(response,responseMsgJson.toString());
+            return responseMsgJson.toString();
+        }finally {
+            LOGGER.info("返回WXISH5请求:" + responseMsgJson.toString());
         }
 
     }

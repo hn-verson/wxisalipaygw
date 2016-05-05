@@ -158,7 +158,7 @@ public class AlipayService {
             AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
             if(alipayClient == null){
                 LOGGER.info("获取医院【"+unitLink.getUnit_id()+"】的服务窗客户端失败");
-                return null;
+                throw new Exception("无法获取医院【"+unitLink.getUnit_id()+"】配置");
             }
 
             AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient.execute(oauthTokenRequest);
@@ -179,7 +179,8 @@ public class AlipayService {
                 }
             }
         } catch (AlipayApiException e) {
-            LOGGER.error("获取用户信息异常" + e);
+            LOGGER.error("获取用户信息异常:" + e);
+            throw new Exception("获取用户信息异常:" + e);
         }
 
         return alipayUserInfo;
