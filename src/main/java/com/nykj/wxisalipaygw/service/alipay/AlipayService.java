@@ -209,6 +209,10 @@ public class AlipayService {
             gisJson.put("latitude",gisGetResponse.getLatitude());
         }
 
+        if(!gisJson.has("longitude") || !gisJson.has("latitude")){
+            throw new Exception("无法获取用户【"+openId+"】的地理位置");
+        }
+
         return gisJson.toString();
     }
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -31,24 +30,24 @@ public class Wxish5Gateway extends BaseController {
     @Autowired
     private UnitInfoService unitInfoService;
 
-    @RequestMapping(value = "/wxish5", method = RequestMethod.POST,produces = "application/json; charset=UTF-8")
-    public @ResponseBody String handler(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "/wxish5", method = RequestMethod.POST)
+    public void handler(HttpServletRequest request, HttpServletResponse response){
         Map<String,String> paramMap = getRequestParams(request);
-        System.out.println(request.getParameter("service"));
         JSONObject verifyResultJson = null;
         JSONObject responseMsgJson = null;
         JSONObject bizBodyJson = null;
+        response.setContentType("application/json;charset=UTF-8");
 
         try{
             verifyResultJson = paramsVerify(paramMap);
             if(verifyResultJson.has("code") && verifyResultJson.getInt("code") == Wxish5Constants.API_ACESS_FAILER_FLAG){
-                return verifyResultJson.toString();
+                printClient(response,verifyResultJson.toString());
+                return;
             }
 
             bizBodyJson = buildBizBody(paramMap);
             responseMsgJson = new JSONObject();
             String service = bizBodyJson.getString("service");
-            JSONObject dataJson = JSONObject.fromObject(paramMap.get("data"));
 
             if(Wxish5Constants.ALIPAY_USER_INFO_SERVICE.equals(service)){
                 AlipayUserInfo alipayUserInfo = alipayService.getAlipayUserInfo(bizBodyJson);
@@ -59,15 +58,18 @@ public class Wxish5Gateway extends BaseController {
             }else{
                 responseMsgJson.put("code",1);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
+                printClient(response,responseMsgJson.toString());
+                return;
             }
+            responseMsgJson.put("code",0);
+            responseMsgJson.put("message","成功");
+            printClient(response,responseMsgJson.toString());
         }catch (Exception e){
             LOGGER.error("网关处理异常:" + e);
             responseMsgJson.put("code",1);
             responseMsgJson.put("message","处理异常:" + e);
+            printClient(response,responseMsgJson.toString());
         }
-        responseMsgJson.put("code",0);
-        responseMsgJson.put("message","成功");
-        return responseMsgJson.toString();
 
     }
 
