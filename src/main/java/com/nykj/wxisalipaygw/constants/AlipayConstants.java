@@ -13,8 +13,11 @@ public class AlipayConstants {
     /**签名类型-视支付宝服务窗要求*/
     public static final String SIGN_TYPE         = "RSA";
 
-    /**授权访问令牌的授权类型*/
-    public static final String GRANT_TYPE        = "authorization_code";
+    /**授权码方式获取访问令牌*/
+    public static final String GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code";
+
+    /**刷新令牌方式获取访问令牌**/
+    public static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
 
     /** 文本格式 **/
     public static final String FORMAT            = "json";
@@ -44,4 +47,8 @@ public class AlipayConstants {
     public static int AUTO_REPLY_TRIGGER_TYPE_QUESTIONNUM = 3;
     /** 智能客服：触发类型  用户关注  4 */
     public static int AUTO_REPLY_TRIGGER_TYPE_FOLLOW = 4;
+
+    /** 业务处理回调超时时间[单位/毫秒] **/
+    public static int BIZ_HANDLER_TIME_OUT = 5 * 60 * 1000;
+
 }

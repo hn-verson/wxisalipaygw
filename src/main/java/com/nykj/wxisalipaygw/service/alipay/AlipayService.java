@@ -4,9 +4,11 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.internal.util.StringUtils;
+import com.alipay.api.request.AlipayCommerceMedicalInstcardBindRequest;
 import com.alipay.api.request.AlipayMobilePublicGisGetRequest;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
 import com.alipay.api.request.AlipayUserUserinfoShareRequest;
+import com.alipay.api.response.AlipayCommerceMedicalInstcardBindResponse;
 import com.alipay.api.response.AlipayMobilePublicGisGetResponse;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
@@ -16,11 +18,13 @@ import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.model.alipay.AlipayModel;
 import com.nykj.wxisalipaygw.service.ChannelService;
+import com.nykj.wxisalipaygw.util.DateUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -151,10 +155,11 @@ public class AlipayService {
         AlipayUserUserinfoShareResponse userinfoShareResponse = null;
         try {
             AlipaySystemOauthTokenRequest oauthTokenRequest = new AlipaySystemOauthTokenRequest();
-            oauthTokenRequest.setCode(alipayBizBody.getString("auth_code"));
+            String authCode = alipayBizBody.getString("auth_code");
+            oauthTokenRequest.setCode(authCode);
             JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
             UnitLink unitLink = (UnitLink) JSONObject.toBean(unitLinkJson,UnitLink.class);
-            oauthTokenRequest.setGrantType(AlipayConstants.GRANT_TYPE);
+            oauthTokenRequest.setGrantType(AlipayConstants.GRANT_TYPE_AUTHORIZATION_CODE);
             AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
             if(alipayClient == null){
                 LOGGER.info("获取医院【"+unitLink.getUnit_id()+"】的服务窗客户端失败");
@@ -165,6 +170,7 @@ public class AlipayService {
 
             //成功获得authToken
             if (null != oauthTokenResponse && oauthTokenResponse.isSuccess()) {
+                String refreshToken = oauthTokenResponse.getRefreshToken();
                 userinfoShareResponse = alipayClient.execute(userinfoShareRequest, oauthTokenResponse.getAccessToken());
                 //成功获得用户信息
                 if(userinfoShareResponse != null && userinfoShareResponse.isSuccess()){
@@ -176,6 +182,8 @@ public class AlipayService {
                     alipayUserInfo.setGender(userinfoShareResponse.getGender());
                     alipayUserInfo.setUserTypeValue(userinfoShareResponse.getUserTypeValue());
                     alipayUserInfo.setOpenId(userinfoShareResponse.getAlipayUserId());
+                    alipayUserInfo.setAuthCode(authCode);
+                    alipayUserInfo.setRefreshToken(refreshToken);
                 }
             }
         } catch (AlipayApiException e) {
@@ -215,6 +223,72 @@ public class AlipayService {
         }
 
         return gisJson.toString();
+    }
+
+    /**
+     * 绑定社保卡
+     * @param alipayBizBody
+     */
+    public void bindInstCard(JSONObject alipayBizBody) throws Exception{
+        JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
+        UnitLink unitLink = (UnitLink)JSONObject.toBean(unitLinkJson,UnitLink.class);
+        AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
+        String timestamp = DateUtil.formatDate(new Date(),GlobalConstants.TIME_FORMAT);
+        String accessToken = getAccessToken(alipayBizBody);
+
+        AlipayCommerceMedicalInstcardBindRequest request = new AlipayCommerceMedicalInstcardBindRequest();
+
+        JSONObject bizContentJson = new JSONObject();
+        bizContentJson.put("method","alipay.commerce.medical.instcard.bind");
+        bizContentJson.put("app_id", unitLink.getApp_id());
+        bizContentJson.put("version","1.0");
+        bizContentJson.put("timestamp",timestamp);
+        bizContentJson.put("sign",unitLink.getSrv_token());
+        bizContentJson.put("sign_type",AlipayConstants.SIGN_TYPE);
+        bizContentJson.put("return_url",alipayBizBody.getString("project_base_path") + "/gateway/alipay/" + unitLink.getUnit_id() + "biz");
+        bizContentJson.put("auth_token",accessToken);
+        bizContentJson.put("sign_flag","true");
+        bizContentJson.put("buyer_id",alipayBizBody.getString("open_id"));
+
+        request.setBizContent(bizContentJson.toString());
+
+        AlipayCommerceMedicalInstcardBindResponse response = alipayClient.execute(request);
+
+        if(response == null || !response.isSuccess()){
+            throw new Exception("社保卡绑定失败");
+        }
+
+    }
+
+    /**
+     * 获取访问令牌
+     * @param alipayBizBody
+     * @return
+     * @throws Exception
+     */
+    public String getAccessToken(JSONObject alipayBizBody) throws Exception{
+        if(!alipayBizBody.has("auth_code") && !alipayBizBody.has("refresh_token")){
+            throw new Exception("缺失授权码或刷新令牌");
+        }
+        String authCode = alipayBizBody.has("auth_code") ? alipayBizBody.getString("auth_code") : null;
+        String refreshToken = alipayBizBody.has("refresh_token") ? alipayBizBody.getString("refresh_token") : null;
+        JSONObject unitLinkJson = (JSONObject) alipayBizBody.get("unit_link");
+        UnitLink unitLink = (UnitLink) JSONObject.toBean(unitLinkJson,UnitLink.class);
+
+        AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
+        AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
+        if(!StringUtils.isEmpty(authCode)){
+            request.setGrantType(AlipayConstants.GRANT_TYPE_AUTHORIZATION_CODE);
+            request.setCode(authCode);
+        }else{
+            request.setGrantType(AlipayConstants.GRANT_TYPE_REFRESH_TOKEN);
+            request.setRefreshToken(refreshToken);
+        }
+        AlipaySystemOauthTokenResponse response = alipayClient.execute(request);
+        if(request == null || !response.isSuccess()){
+            throw new Exception("获取访问令牌失败");
+        }
+        return response.getAccessToken();
     }
 
     /**

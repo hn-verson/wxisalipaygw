@@ -18,6 +18,10 @@ public class AlipayUserInfo {
     private String userTypeValue;
     /*用户标识*/
     private String openId;
+    /*授权码*/
+    private String authCode;
+    /*刷新令牌*/
+    private String refreshToken;
 
     public String getAvatar() {
         return avatar;
@@ -75,4 +79,19 @@ public class AlipayUserInfo {
         this.openId = openId;
     }
 
+    public String getAuthCode() {
+        return authCode;
+    }
+
+    public void setAuthCode(String authCode) {
+        this.authCode = authCode;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

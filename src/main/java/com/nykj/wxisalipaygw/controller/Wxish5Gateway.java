@@ -1,13 +1,16 @@
 package com.nykj.wxisalipaygw.controller;
 
+import com.nykj.wxisalipaygw.constants.AlipayConstants;
 import com.nykj.wxisalipaygw.constants.Wxish5Constants;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
+import com.nykj.wxisalipaygw.model.alipay.DataExchangeContainer;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
 import com.nykj.wxisalipaygw.service.alipay.UnitInfoService;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Verson on 2016/5/4.
  */
 @Controller
+@Scope("prototype")
 @RequestMapping("/gateway")
 public class Wxish5Gateway extends BaseController {
     private final static Logger LOGGER = Logger.getLogger(Wxish5Gateway.class);
@@ -38,7 +43,6 @@ public class Wxish5Gateway extends BaseController {
         JSONObject verifyResultJson = null;
         JSONObject responseMsgJson = null;
         JSONObject bizBodyJson = null;
-        response.setContentType("application/json;charset=UTF-8");
 
         try{
             LOGGER.info("接收WXISH5请求:" + paramMap.toString());
@@ -48,27 +52,55 @@ public class Wxish5Gateway extends BaseController {
             }
 
             bizBodyJson = buildBizBody(paramMap);
+            String projectBasePath = getProjectBasePath(request);
+            bizBodyJson.put("project_base_path",projectBasePath);
+
             responseMsgJson = new JSONObject();
             String service = bizBodyJson.getString("service");
 
+            //支付宝用户信息服务
             if(Wxish5Constants.ALIPAY_USER_INFO_SERVICE.equals(service)){
                 AlipayUserInfo alipayUserInfo = alipayService.getAlipayUserInfo(bizBodyJson);
                 responseMsgJson.put("data",JSONObject.fromObject(alipayUserInfo));
+
+                //支付宝用户地理位置信息服务
             }else if(Wxish5Constants.ALIPAY_USER_GIS_SERVICE.equals(service)){
                 String location = alipayService.getUserGisInfo(bizBodyJson);
                 responseMsgJson.put("data",location);
+
+                //支付宝社保卡绑定服务
+            }else if(Wxish5Constants.ALIPAY_INST_CARD_BIND_SERVICE.equals(service)){
+                alipayService.bindInstCard(bizBodyJson);
+                String openId = bizBodyJson.getString("open_id");
+                //监视数据交换容器
+                int times = (AlipayConstants.BIZ_HANDLER_TIME_OUT % 100 == 0) ? (AlipayConstants.BIZ_HANDLER_TIME_OUT / 100) : (AlipayConstants.BIZ_HANDLER_TIME_OUT / 100 + 1);
+                boolean flag = false;
+                for(int i = 0 ; i < times; i++){
+                    if(DataExchangeContainer.alipayInstCardInfoMap.containsKey(openId)){
+                        responseMsgJson.put("data",DataExchangeContainer.alipayInstCardInfoMap.remove(openId));
+                        flag = true ;
+                        break;
+                    }
+                    TimeUnit.MILLISECONDS.sleep(100);
+                }
+                if(!flag){
+                    throw new Exception("等待支付宝绑定社保卡响应超时");
+                }
             }else{
                 responseMsgJson.put("code",1);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
+                responseMsgJson.put("time",System.currentTimeMillis());
                 return responseMsgJson.toString();
             }
             responseMsgJson.put("code",0);
             responseMsgJson.put("message","成功");
+            responseMsgJson.put("time",System.currentTimeMillis());
             return responseMsgJson.toString();
         }catch (Exception e){
             LOGGER.error("网关处理异常:" + e);
             responseMsgJson.put("code",1);
             responseMsgJson.put("message","处理异常:" + e);
+            responseMsgJson.put("time",System.currentTimeMillis());
             return responseMsgJson.toString();
         }finally {
             LOGGER.info("返回WXISH5请求:" + responseMsgJson.toString());
@@ -85,6 +117,7 @@ public class Wxish5Gateway extends BaseController {
         JSONObject verifyResultJson = new JSONObject();
         String service = paramMap.get("service");
         String data = paramMap.get("data");
+        String time = paramMap.get("time");
         if(StringUtils.isEmpty(service)){
             verifyResultJson.put("code",1);
             verifyResultJson.put("message","服务参数为空");
@@ -93,6 +126,11 @@ public class Wxish5Gateway extends BaseController {
         if(StringUtils.isEmpty(data)){
             verifyResultJson.put("code",1);
             verifyResultJson.put("message","业务参数为空");
+            return verifyResultJson;
+        }
+        if(StringUtils.isEmpty(time)){
+            verifyResultJson.put("code",1);
+            verifyResultJson.put("message","请求时间为空");
             return verifyResultJson;
         }
         JSONObject dataJson = JSONObject.fromObject(data);
@@ -115,13 +153,26 @@ public class Wxish5Gateway extends BaseController {
                 verifyResultJson.put("message","用户认证码为空");
                 return verifyResultJson;
             }
-        }else if(Wxish5Constants.ALIPAY_USER_GIS_SERVICE.equals(service)){
+        }else if(Wxish5Constants.ALIPAY_USER_GIS_SERVICE.equals(service)
+                || Wxish5Constants.ALIPAY_INST_CARD_BIND_SERVICE.equals(service)){
             String openId = dataJson.getString("open_id");
             if(StringUtils.isEmpty(openId)){
                 verifyResultJson.put("code",1);
                 verifyResultJson.put("message","用户标识为空");
                 return verifyResultJson;
             }
+            if(Wxish5Constants.ALIPAY_INST_CARD_BIND_SERVICE.equals(service)){
+                String refreshToken = dataJson.getString("refresh_token");
+                if(StringUtils.isEmpty(refreshToken)){
+                    verifyResultJson.put("code",1);
+                    verifyResultJson.put("message","刷新令牌为空");
+                    return verifyResultJson;
+                }
+            }
+        }else{
+            verifyResultJson.put("code",1);
+            verifyResultJson.put("message","未标识的服务:" + service);
+            return verifyResultJson;
         }
         return verifyResultJson;
     }
@@ -140,7 +191,7 @@ public class Wxish5Gateway extends BaseController {
         bizBodyJson.put("service",service);
         bizBodyJson.put("unit_id",unitId);
         bizBodyJson.put("channel",dataJson.getString("channel"));
-        bizBodyJson.put("request_time",paramMap.get("request_time"));
+        bizBodyJson.put("time",paramMap.get("time"));
 
         //将医院服务窗配置信息整合至业务消息体
         UnitLink unitLink = unitInfoService.findUnitLinkByUnitId(unitId);
@@ -151,6 +202,9 @@ public class Wxish5Gateway extends BaseController {
             bizBodyJson.put("auth_code",dataJson.getString("auth_code"));
         }else if(Wxish5Constants.ALIPAY_USER_GIS_SERVICE.equals(service)){
             bizBodyJson.put("open_id",dataJson.getString("open_id"));
+        }else if(Wxish5Constants.ALIPAY_INST_CARD_BIND_SERVICE.equals(service)){
+            bizBodyJson.put("open_id",dataJson.getString("open_id"));
+            bizBodyJson.put("refresh_token",dataJson.getString("refresh_token"));
         }
 
         return bizBodyJson;

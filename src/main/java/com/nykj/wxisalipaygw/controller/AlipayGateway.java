@@ -6,7 +6,9 @@ package com.nykj.wxisalipaygw.controller;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.StringUtils;
+import com.nykj.wxisalipaygw.entity.alipay.AlipayInstCardInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
+import com.nykj.wxisalipaygw.model.alipay.DataExchangeContainer;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
 import com.nykj.wxisalipaygw.service.alipay.UnitInfoService;
 import net.sf.json.JSONObject;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
@@ -45,17 +48,17 @@ public class AlipayGateway extends BaseController {
     private UnitInfoService unitInfoService;
 
     /**
-     * 服务窗回调处理
-     * @param channel
-     * @param unitId
-     * @param request
+     * 服务窗事件回调处理
+     * @param channel   渠道
+     * @param unitId    医院
+     * @param request   请求
      * @return
      * @throws ServletException
      * @throws IOException
      */
-    @RequestMapping(value = "/{channel}/{unit_id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{channel}/{unit_id}/window", method = RequestMethod.POST)
     @ResponseBody
-    public String alipayCallBack(@PathVariable(value = "channel") String channel,
+    public String alipayWindowEventCallBack(@PathVariable(value = "channel") String channel,
                                  @PathVariable(value = "unit_id") String unitId,
                                  HttpServletRequest request) {
         Map<String,String> params = null;
@@ -64,7 +67,7 @@ public class AlipayGateway extends BaseController {
         try {
             //将原生参数解析成Map
             params = getRequestParams(request);
-            LOGGER.info("支付宝回调参数:"+ params);
+            LOGGER.info("支付宝窗口事件回调参数:"+ params);
 
             //1. 根据请求信息组装业务体
             alipayBizBody = buildAlipayBizBody(request);
@@ -100,7 +103,36 @@ public class AlipayGateway extends BaseController {
     }
 
     /**
-     * 构建支付宝回调请求体，方便简化下层逻辑的处理
+     * 支付宝业务处理回调处理
+     * @param channel   渠道
+     * @param unitId    医院
+     * @param request   请求
+     */
+    @RequestMapping(value = "/{channel}/{unit_id}/biz", method = RequestMethod.GET)
+    @ResponseBody
+    public String alipayBizHandlerCallBack(@PathVariable(value = "channel") String channel,
+                                         @PathVariable(value = "unit_id") String unitId,
+                                         HttpServletRequest request,
+                                         HttpServletResponse response){
+        Map<String,String> params = null;
+        JSONObject alipayBizBody = null;
+        try {
+            params = getRequestParams(request);
+            LOGGER.info("支付宝业务处理回调参数:"+ params);
+
+            //回调处理，将回调携带数据装载至数据交换容器中
+            JSONObject paramJson = JSONObject.fromObject(params);
+            AlipayInstCardInfo alipayInstCardInfo = (AlipayInstCardInfo) JSONObject.toBean(paramJson,AlipayInstCardInfo.class);
+            DataExchangeContainer.alipayInstCardInfoMap.put(alipayInstCardInfo.getBuyer_user_id(),alipayInstCardInfo);
+
+        }catch (Exception e){
+            LOGGER.error("支付宝业务处理回调处理异常:" + e);
+        }
+        return channel + unitId + "biz";
+    }
+
+    /**
+     * 构建支付宝窗口事件回调请求体，方便简化下层逻辑的处理
      * @param request
      * @return
      */
