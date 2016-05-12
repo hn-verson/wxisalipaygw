@@ -6,9 +6,7 @@ package com.nykj.wxisalipaygw.controller;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.StringUtils;
-import com.nykj.wxisalipaygw.entity.alipay.AlipayInstCardInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
-import com.nykj.wxisalipaygw.model.alipay.DataExchangeContainer;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
 import com.nykj.wxisalipaygw.service.alipay.UnitInfoService;
 import net.sf.json.JSONObject;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
@@ -112,18 +109,12 @@ public class AlipayGateway extends BaseController {
     @ResponseBody
     public String alipayBizHandlerCallBack(@PathVariable(value = "channel") String channel,
                                          @PathVariable(value = "unit_id") String unitId,
-                                         HttpServletRequest request,
-                                         HttpServletResponse response){
+                                         HttpServletRequest request){
         Map<String,String> params = null;
         JSONObject alipayBizBody = null;
         try {
             params = getRequestParams(request);
             LOGGER.info("支付宝业务处理回调参数:"+ params);
-
-            //回调处理，将回调携带数据装载至数据交换容器中
-            JSONObject paramJson = JSONObject.fromObject(params);
-            AlipayInstCardInfo alipayInstCardInfo = (AlipayInstCardInfo) JSONObject.toBean(paramJson,AlipayInstCardInfo.class);
-            DataExchangeContainer.alipayInstCardInfoMap.put(alipayInstCardInfo.getBuyer_user_id(),alipayInstCardInfo);
 
         }catch (Exception e){
             LOGGER.error("支付宝业务处理回调处理异常:" + e);

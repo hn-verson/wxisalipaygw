@@ -1,6 +1,6 @@
 package com.nykj.wxisalipaygw.service.alipay;
 
-import com.nykj.wxisalipaygw.constants.AlipayConstants;
+import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.model.alipay.UserQuestionMapper;
 import com.nykj.wxisalipaygw.entity.alipay.AutoReply;
 import com.nykj.wxisalipaygw.entity.alipay.UserQuestion;
@@ -45,19 +45,19 @@ public class UserQuestionService {
         if(replys!=null && replys.size()>0){
             for (int i = 0; i < replys.size(); i++) {
                 AutoReply reply = replys.get(i);
-                if(reply.getTrigger_type()== AlipayConstants.AUTO_REPLY_TRIGGER_TYPE_QUESTIONNUM){
+                if(reply.getTrigger_type()== AlipayEnvConstants.AUTO_REPLY_TRIGGER_TYPE_QUESTIONNUM){
                     //常见问题自助查询
                     if(content.equals(reply.getTrigger_word())){
                         result = reply.getReply_content();
                         break;
                     }
-                }else if(reply.getTrigger_type()==AlipayConstants.AUTO_REPLY_TRIGGER_TYPE_KEY){
+                }else if(reply.getTrigger_type()== AlipayEnvConstants.AUTO_REPLY_TRIGGER_TYPE_KEY){
                     //关键词触发
                     if(content.indexOf(reply.getTrigger_word())!=-1){
                         result = reply.getReply_content();
                         break;
                     }
-                }else if(reply.getTrigger_type()==AlipayConstants.AUTO_REPLY_TRIGGER_TYPE_DEFAULT){
+                }else if(reply.getTrigger_type()== AlipayEnvConstants.AUTO_REPLY_TRIGGER_TYPE_DEFAULT){
                     //常见问题列表
                     result = reply.getReply_content();
                     break;

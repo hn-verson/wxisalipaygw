@@ -7,7 +7,7 @@
         SELECT
             COUNT(1)
         FROM weixin_channel_scene
-        WHERE unit_id=#{unit_id} AND scene_code=#{scene_code}
+        WHERE unit_id=#{unit_id} AND channel_id=#{channel_id} AND scene_code=#{scene_code}
     </select>
 
 </mapper>

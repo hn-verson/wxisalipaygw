@@ -4,7 +4,7 @@
 
     <!-- 存储渠道统计信息(关注、扫码) -->
     <insert id="insertChannelStatistics" parameterType="com.nykj.wxisalipaygw.entity.ChannelStatistics" >
-        INSERT INTO weixin_channel_count ( id ,fromUserName,event,createTime,toUserName,msgType,scene_id,create_time)
+        INSERT INTO weixin_channel_count ( id ,fromUserName,event,createTime,toUserName,msgType,channel_id,scene_id,create_time)
         VALUES(#{id}, #{fromUserName}, #{event}, #{createTime}, #{toUserName}, #{msgType}, #{scene_id}, #{create_time});
     </insert>
 

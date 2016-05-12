@@ -10,6 +10,8 @@ public class Wxish5Constants {
     public final static String ALIPAY_USER_GIS_SERVICE = "alipay_user_gis_service";
     /** 社保卡绑定服务 **/
     public final static String ALIPAY_INST_CARD_BIND_SERVICE = "alipay_inst_card_bind_service";
+    /** 社保卡查询服务 **/
+    public final static String ALIPAY_INST_CARD_QUERY_SERVICE = "alipay_inst_card_query_service";
 
     /** 接口请求成功标记 **/
     public final static int API_ACESS_SUCCESS_FLAG = 0;

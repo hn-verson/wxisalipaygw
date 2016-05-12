@@ -11,7 +11,7 @@ import java.util.Date;
 public class ChannelStatistics {
 	
 	private String id;				//主键ID
-	private String channel;			//渠道标识(公众号，服务窗)
+	private int channel_id;		    //渠道标识(公众号，服务窗)
 	private String ticket;			//二维码ticket
 	private String fromUserName;	//用户在公众号里的openId
 	private String event;			//事件类型，该表只存subscribe，SCAN
@@ -28,12 +28,12 @@ public class ChannelStatistics {
 		this.id = id;
 	}
 
-	public String getChannel() {
-		return channel;
+	public int getChannel_id() {
+		return channel_id;
 	}
 
-	public void setChannel(String channel) {
-		this.channel = channel;
+	public void setChannel_id(int channel_id) {
+		this.channel_id = channel_id;
 	}
 
 	public String getTicket() {
@@ -97,7 +97,8 @@ public class ChannelStatistics {
 				+ ", fromUserName=" + fromUserName + ", event=" + event
 				+ ", eventKey=" + eventKey + ", createTime=" + createTime
 				+ ", toUserName=" + toUserName + ", msgType=" + msgType
-				+ ", scene_id=" + scene_id + ", create_time=" + create_time
+				+ ", channel_id=" + channel_id + ", scene_id=" + scene_id
+				+ ", create_time=" + create_time
 				+ "]";
 	}
 

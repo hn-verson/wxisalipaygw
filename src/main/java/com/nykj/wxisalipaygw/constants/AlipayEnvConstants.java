@@ -3,7 +3,7 @@ package com.nykj.wxisalipaygw.constants;
 /**
  * Created by Verson on 2016/4/29.
  */
-public class AlipayConstants {
+public class AlipayEnvConstants {
     /**签名编码-视支付宝服务窗要求*/
     public static final String SIGN_CHARSET      = "GBK";
 
@@ -28,6 +28,12 @@ public class AlipayConstants {
     /**支付宝消息通知服务*/
     public static final String ALIPAY_PUBLIC_MESSAGE_NOTIFY = "alipay.mobile.public.message.notify";
 
+    /** 支付宝社保卡绑定服务 **/
+    public static final String ALIPAY_MEDICAL_INST_CARD_BIND = "alipay.commerce.medical.instcard.bind";
+
+    /** 支付宝社保卡查询服务 **/
+    public static final String ALIPAY_MEDICAL_INST_CARD_QUERY = "alipay.commerce.medical.card.query";
+
     /**网关验证事件*/
     public static final String VERIFYGW_EVENT = "verifygw";
     /**服务窗关注事件*/
@@ -48,7 +54,7 @@ public class AlipayConstants {
     /** 智能客服：触发类型  用户关注  4 */
     public static int AUTO_REPLY_TRIGGER_TYPE_FOLLOW = 4;
 
-    /** 业务处理回调超时时间[单位/毫秒] **/
-    public static int BIZ_HANDLER_TIME_OUT = 5 * 60 * 1000;
+    /** 渠道标识 **/
+    public static int CHANNEL_ID = 2;
 
 }

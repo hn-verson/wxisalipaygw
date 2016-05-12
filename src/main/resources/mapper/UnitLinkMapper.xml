@@ -8,12 +8,12 @@
             unit_id,
             app_id,
             app_name,
-            app_secret,
-            srv_url,
-            srv_token,
-            srv_aeskey
+            private_key,
+            alipay_gateway,
+            alipay_public_key,
+            public_key
         FROM
-          weixin_hosp_link
+          alipay_hosp_link
         WHERE
           unit_id = #{unit_id, jdbcType=VARCHAR}
           limit 1

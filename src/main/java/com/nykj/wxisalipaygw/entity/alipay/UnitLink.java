@@ -1,116 +1,141 @@
 package com.nykj.wxisalipaygw.entity.alipay;
 
+import java.util.Date;
+
 public class UnitLink {
-	
+
 	private String id;
-	private String unit_id;
-	private String weixin_id;
 	private String app_id;
 	private String app_name;
-	private String app_secret;
-	private String srv_url;
-	private String srv_token;
-	private String srv_aeskey;
-	private String srv_mode;
-	private String is_active;
-	private String is_delete;
-	private String create_time;
+	private String alipay_gateway;
+	private String alipay_public_key;
+	private String private_key;
+	private String public_key;
+	private String partner;
+	private String unit_id;
+	private int is_active;
+	private int is_delete;
+	private Date create_time;
 	private String creator;
-	private String modify_time;
+	private Date modify_time;
 	private String modifor;
+
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getUnit_id() {
-		return unit_id;
-	}
-	public void setUnit_id(String unit_id) {
-		this.unit_id = unit_id;
-	}
-	public String getWeixin_id() {
-		return weixin_id;
-	}
-	public void setWeixin_id(String weixin_id) {
-		this.weixin_id = weixin_id;
-	}
+
 	public String getApp_id() {
 		return app_id;
 	}
+
 	public void setApp_id(String app_id) {
 		this.app_id = app_id;
 	}
+
 	public String getApp_name() {
 		return app_name;
 	}
+
 	public void setApp_name(String app_name) {
 		this.app_name = app_name;
 	}
-	public String getApp_secret() {
-		return app_secret;
+
+	public String getAlipay_gateway() {
+		return alipay_gateway;
 	}
-	public void setApp_secret(String app_secret) {
-		this.app_secret = app_secret;
+
+	public void setAlipay_gateway(String alipay_gateway) {
+		this.alipay_gateway = alipay_gateway;
 	}
-	public String getSrv_url() {
-		return srv_url;
+
+	public String getAlipay_public_key() {
+		return alipay_public_key;
 	}
-	public void setSrv_url(String srv_url) {
-		this.srv_url = srv_url;
+
+	public void setAlipay_public_key(String alipay_public_key) {
+		this.alipay_public_key = alipay_public_key;
 	}
-	public String getSrv_token() {
-		return srv_token;
+
+	public String getPrivate_key() {
+		return private_key;
 	}
-	public void setSrv_token(String srv_token) {
-		this.srv_token = srv_token;
+
+	public void setPrivate_key(String private_key) {
+		this.private_key = private_key;
 	}
-	public String getSrv_aeskey() {
-		return srv_aeskey;
+
+	public String getPublic_key() {
+		return public_key;
 	}
-	public void setSrv_aeskey(String srv_aeskey) {
-		this.srv_aeskey = srv_aeskey;
+
+	public void setPublic_key(String public_key) {
+		this.public_key = public_key;
 	}
-	public String getSrv_mode() {
-		return srv_mode;
+
+	public String getPartner() {
+		return partner;
 	}
-	public void setSrv_mode(String srv_mode) {
-		this.srv_mode = srv_mode;
+
+	public void setPartner(String partner) {
+		this.partner = partner;
 	}
-	public String getIs_active() {
+
+	public String getUnit_id() {
+		return unit_id;
+	}
+
+	public void setUnit_id(String unit_id) {
+		this.unit_id = unit_id;
+	}
+
+	public int getIs_active() {
 		return is_active;
 	}
-	public void setIs_active(String is_active) {
+
+	public void setIs_active(int is_active) {
 		this.is_active = is_active;
 	}
-	public String getIs_delete() {
+
+	public int getIs_delete() {
 		return is_delete;
 	}
-	public void setIs_delete(String is_delete) {
+
+	public void setIs_delete(int is_delete) {
 		this.is_delete = is_delete;
 	}
-	public String getCreate_time() {
+
+	public Date getCreate_time() {
 		return create_time;
 	}
-	public void setCreate_time(String create_time) {
+
+	public void setCreate_time(Date create_time) {
 		this.create_time = create_time;
 	}
+
 	public String getCreator() {
 		return creator;
 	}
+
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
-	public String getModify_time() {
+
+	public Date getModify_time() {
 		return modify_time;
 	}
-	public void setModify_time(String modify_time) {
+
+	public void setModify_time(Date modify_time) {
 		this.modify_time = modify_time;
 	}
+
 	public String getModifor() {
 		return modifor;
 	}
+
 	public void setModifor(String modifor) {
 		this.modifor = modifor;
 	}

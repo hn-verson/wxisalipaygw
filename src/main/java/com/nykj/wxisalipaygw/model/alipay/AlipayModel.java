@@ -1,16 +1,25 @@
 package com.nykj.wxisalipaygw.model.alipay;
 
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.*;
+import com.alipay.api.internal.util.AlipayHashMap;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.internal.util.RequestParametersHolder;
+import com.alipay.api.internal.util.WebUtils;
 import com.alipay.api.request.AlipayMobilePublicMessageCustomSendRequest;
 import com.alipay.api.response.AlipayMobilePublicMessageCustomSendResponse;
-import com.nykj.wxisalipaygw.constants.AlipayConstants;
+import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
+import com.nykj.wxisalipaygw.constants.GlobalConstants;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
+import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardBindRequest;
+import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardQueryRequest;
+import com.nykj.wxisalipaygw.util.DateUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Verson on 2016/4/29.
@@ -24,8 +33,8 @@ public class AlipayModel {
      * @return
      */
     public AlipayClient getAlipayClient(UnitLink unitLink){
-        AlipayClient alipayClient = new DefaultAlipayClient(unitLink.getSrv_url(), unitLink.getApp_id(),
-                unitLink.getApp_secret(), AlipayConstants.FORMAT, AlipayConstants.CHARSET,unitLink.getSrv_token());
+        AlipayClient alipayClient = new DefaultAlipayClient(unitLink.getAlipay_gateway(), unitLink.getApp_id(),
+                unitLink.getPrivate_key(), AlipayEnvConstants.FORMAT, AlipayEnvConstants.CHARSET,unitLink.getAlipay_public_key());
         return alipayClient;
     }
     /**
@@ -75,7 +84,7 @@ public class AlipayModel {
         //固定响应格式，必须按此格式返回
         StringBuilder builder = new StringBuilder();
         builder.append("<success>").append(Boolean.TRUE.toString()).append("</success>");
-        builder.append("<biz_content>").append(unitLink.getSrv_aeskey())
+        builder.append("<biz_content>").append(unitLink.getPublic_key())
                 .append("</biz_content>");
         return builder.toString();
     }
@@ -119,7 +128,134 @@ public class AlipayModel {
         };
     }
 
-    //转义推送用户消息
+    /**
+     * 构造医保卡绑定请求url
+     * @param alipayBizBody
+     * @return
+     */
+    public String buildMedicalInstCardBindUrl(JSONObject alipayBizBody) throws Exception{
+        AlipayMedicalInstCardBindRequest request = new AlipayMedicalInstCardBindRequest();
+        request.setBuyerId(alipayBizBody.getString("open_id"));
+        request.setReturnUrl(alipayBizBody.getString("return_url"));
+
+        JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
+        UnitLink unitLink = (UnitLink)JSONObject.toBean(unitLinkJson,UnitLink.class);
+
+        RequestParametersHolder requestHolder = buildAlipayRequestHolder(request,unitLink,alipayBizBody);
+
+        StringBuilder baseUrl = new StringBuilder(unitLink.getAlipay_gateway());
+
+        return buildAlipayUrl(baseUrl,requestHolder,AlipayConstants.CHARSET_UTF8);
+    }
+
+    /**
+     * 构建医保卡查询请求url
+     * @param alipayBizBody
+     * @return
+     * @throws Exception
+     */
+    public String buildMedicalInstCardQueryUrl(JSONObject alipayBizBody) throws Exception{
+        AlipayMedicalInstCardQueryRequest request = new AlipayMedicalInstCardQueryRequest();
+        request.setBuyerId(alipayBizBody.getString("open_id"));
+        request.setCardOrgNo(alipayBizBody.getString("card_org_ no"));
+
+        JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
+        UnitLink unitLink = (UnitLink)JSONObject.toBean(unitLinkJson,UnitLink.class);
+
+        RequestParametersHolder requestHolder = buildAlipayRequestHolder(request,unitLink,alipayBizBody);
+
+        StringBuilder baseUrl = new StringBuilder(unitLink.getAlipay_gateway());
+
+        return buildAlipayUrl(baseUrl,requestHolder,AlipayConstants.CHARSET_UTF8);
+    }
+
+    /**
+     * 构造requestHolder
+     * @param request
+     * @param alipayBizBody
+     * @return
+     */
+    public RequestParametersHolder buildAlipayRequestHolder(AlipayRequest request,UnitLink unitLink,JSONObject alipayBizBody) throws Exception{
+        RequestParametersHolder requestHolder = new RequestParametersHolder();
+        AlipayHashMap appParams = new AlipayHashMap(request.getTextParams());
+        requestHolder.setApplicationParams(appParams);
+
+        String charset = AlipayConstants.CHARSET_UTF8;
+        String signType = AlipayEnvConstants.SIGN_TYPE;
+
+        AlipayHashMap protocalMustParams = new AlipayHashMap();
+        protocalMustParams.put(AlipayConstants.METHOD, request.getApiMethodName());
+        protocalMustParams.put(AlipayConstants.VERSION, request.getApiVersion());
+        protocalMustParams.put(AlipayConstants.APP_ID, unitLink.getApp_id());
+        protocalMustParams.put(AlipayConstants.SIGN_TYPE, AlipayEnvConstants.SIGN_TYPE);
+        protocalMustParams.put(AlipayConstants.TERMINAL_TYPE, request.getTerminalType());
+        protocalMustParams.put(AlipayConstants.TERMINAL_INFO, request.getTerminalInfo());
+        protocalMustParams.put(AlipayConstants.NOTIFY_URL, request.getNotifyUrl());
+        protocalMustParams.put(AlipayConstants.CHARSET, charset);
+        protocalMustParams.put(AlipayConstants.TIMESTAMP, DateUtil.formatDate(new Date(), GlobalConstants.DATE_TIME_FORMAT));
+        requestHolder.setProtocalMustParams(protocalMustParams);
+
+        AlipayHashMap protocalOptParams = new AlipayHashMap();
+        protocalOptParams.put(AlipayConstants.FORMAT, AlipayEnvConstants.FORMAT);
+        protocalOptParams.put(AlipayConstants.ACCESS_TOKEN, alipayBizBody.getString("access_token"));
+        protocalOptParams.put(AlipayConstants.ALIPAY_SDK, AlipayConstants.SDK_VERSION);
+        protocalOptParams.put(AlipayConstants.PROD_CODE, request.getProdCode());
+        requestHolder.setProtocalOptParams(protocalOptParams);
+
+        if (AlipayConstants.SIGN_TYPE_RSA.equals(signType)) {
+
+            String signContent = AlipaySignature.getSignatureContent(requestHolder);
+
+            protocalMustParams.put(AlipayConstants.SIGN,
+                    AlipaySignature.rsaSign(signContent, unitLink.getPrivate_key(), charset));
+
+        } else {
+            protocalMustParams.put(AlipayConstants.SIGN, "");
+        }
+
+        return requestHolder;
+    }
+
+    /**
+     * 构建支付宝请求地址
+     * @param baseUrl
+     * @return
+     */
+    public String buildAlipayUrl(StringBuilder baseUrl,RequestParametersHolder requestHolder,String charset) throws Exception{
+        try {
+            String sysMustQuery = WebUtils.buildQuery(requestHolder.getProtocalMustParams(),
+                    charset);
+            String sysOptQuery = WebUtils.buildQuery(requestHolder.getProtocalOptParams(), charset);
+
+            String applicationParams = WebUtils.buildQuery(requestHolder.getApplicationParams(),
+                    charset);
+
+            baseUrl.append("?");
+            baseUrl.append(sysMustQuery);
+            if (sysOptQuery != null & sysOptQuery.length() > 0) {
+                baseUrl.append("&");
+                baseUrl.append(sysOptQuery);
+            }
+
+            if (applicationParams != null & applicationParams.length() > 0) {
+                baseUrl.append("&");
+                baseUrl.append(applicationParams);
+            }
+        } catch (IOException e) {
+            throw new AlipayApiException(e);
+        }
+        return baseUrl.toString();
+    }
+
+    /**
+     * 转义推送用户消息
+     * @param oldUrl
+     * @param projectBasePath
+     * @param unitId
+     * @param unitName
+     * @param openId
+     * @return
+     */
     public String changeUrl(String oldUrl, String projectBasePath, String unitId, String unitName, String openId) {
         String newUrl = "";
         if(oldUrl!=null){

@@ -11,10 +11,12 @@ public class GlobalConstants {
     /** 线程池大小 **/
     public static final int THREAD_POOL_MAX_SIZE = 10;
 
+    /** 日期时区 **/
+    public static final String DATE_TIMEZONE = "GMT+8";
     /** 日期格式 **/
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     /** 时间格式 **/
-    public static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     /** 时间戳格式 **/
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 }

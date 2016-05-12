@@ -1,5 +1,6 @@
 package com.nykj.wxisalipaygw.service;
 
+import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.model.ChannelSceneMapper;
 import com.nykj.wxisalipaygw.model.ChannelStatisticsMapper;
 import com.nykj.wxisalipaygw.entity.ChannelScene;
@@ -39,6 +40,7 @@ public class ChannelService {
         //判断医院对应的场景值是否存在
         ChannelScene channelScene = new ChannelScene();
         channelScene.setUnit_id(unitId);
+        channelScene.setChannel_id(AlipayEnvConstants.CHANNEL_ID);
         channelScene.setScene_code(sceneId);
 
         int isExists = channelSceneMapper.isExistsChannelScene(channelScene);
@@ -54,6 +56,7 @@ public class ChannelService {
         channelStatistics.setCreateTime(bizContentJson.getString("CreateTime"));
         channelStatistics.setToUserName(bizContentJson.getString("AppId"));
         channelStatistics.setMsgType(bizContentJson.getString("MsgType"));
+        channelStatistics.setChannel_id(AlipayEnvConstants.CHANNEL_ID);
         channelStatistics.setScene_id(sceneId);
         channelStatistics.setCreate_time(new Date());
 
