@@ -188,6 +188,7 @@ public class AlipayModel {
         alipayMedicalCard.setCardOrgNo(bizContentJson.getString("card_org_no"));
         alipayMedicalCard.setCity(bizContentJson.getString("city"));
         alipayMedicalCard.setExtendParams(bizContentJson.getString("extend_params"));
+        alipayMedicalCard.setGmtSign(bizContentJson.has("gmt_sign") ? bizContentJson.getString("gmt_sign") : null);
         alipayMedicalCard.setMedicalCardId(bizContentJson.getString("medical_card_id"));
         alipayMedicalCard.setMedicalCardNo(bizContentJson.getString("medical_card_no"));
         alipayMedicalCard.setMedicalCardType(bizContentJson.getString("medical_card_type"));

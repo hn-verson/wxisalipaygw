@@ -10,6 +10,7 @@ public class AlipayMedicalCard {
     private String cardOrgNo;
     private String city;
     private String extendParams;
+    private String gmtSign;
     private String medicalCardId;
     private String medicalCardNo;
     private String medicalCardType;
@@ -61,6 +62,14 @@ public class AlipayMedicalCard {
 
     public void setExtendParams(String extendParams) {
         this.extendParams = extendParams;
+    }
+
+    public String getGmtSign() {
+        return gmtSign;
+    }
+
+    public void setGmtSign(String gmtSign) {
+        this.gmtSign = gmtSign;
     }
 
     public String getMedicalCardId() {
