@@ -224,6 +224,9 @@ public class AlipayModel {
 
         AlipayHashMap protocalOptParams = new AlipayHashMap();
         protocalOptParams.put(AlipayConstants.FORMAT, AlipayEnvConstants.FORMAT);
+        if(alipayBizBody.has("access_token")){
+            protocalOptParams.put(AlipayConstants.ACCESS_TOKEN, alipayBizBody.getString("access_token"));
+        }
         protocalOptParams.put(AlipayConstants.ALIPAY_SDK, AlipayConstants.SDK_VERSION);
         protocalOptParams.put(AlipayConstants.PROD_CODE, request.getProdCode());
         requestHolder.setProtocalOptParams(protocalOptParams);
