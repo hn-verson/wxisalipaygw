@@ -18,7 +18,6 @@ import com.nykj.wxisalipaygw.util.HttpUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
-
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -225,7 +224,6 @@ public class AlipayModel {
 
         AlipayHashMap protocalOptParams = new AlipayHashMap();
         protocalOptParams.put(AlipayConstants.FORMAT, AlipayEnvConstants.FORMAT);
-        protocalOptParams.put(AlipayConstants.ACCESS_TOKEN, alipayBizBody.getString("access_token"));
         protocalOptParams.put(AlipayConstants.ALIPAY_SDK, AlipayConstants.SDK_VERSION);
         protocalOptParams.put(AlipayConstants.PROD_CODE, request.getProdCode());
         requestHolder.setProtocalOptParams(protocalOptParams);

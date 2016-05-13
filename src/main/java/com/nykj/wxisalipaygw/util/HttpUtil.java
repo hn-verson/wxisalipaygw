@@ -1,5 +1,6 @@
 package com.nykj.wxisalipaygw.util;
 
+import com.nykj.wxisalipaygw.constants.GlobalConstants;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -22,7 +23,7 @@ public class HttpUtil {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 InputStream instream = entity.getContent();
-                BufferedReader br = new BufferedReader(new InputStreamReader(instream,"UTF-8"));
+                BufferedReader br = new BufferedReader(new InputStreamReader(instream, GlobalConstants.CHARSET_UTF8));
                 String line;
                 try {
                     while((line = br.readLine()) != null){

@@ -78,18 +78,18 @@ public class Wxish5Gateway extends BaseController {
                 AlipayMedicalCard alipayMedicalCard = alipayService.queryMedicalInstCard(bizBodyJson);
                 responseMsgJson.put("data",JSONObject.fromObject(alipayMedicalCard));
             }else{
-                responseMsgJson.put("code",1);
+                responseMsgJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
                 responseMsgJson.put("time",System.currentTimeMillis());
                 return responseMsgJson.toString();
             }
-            responseMsgJson.put("code",0);
+            responseMsgJson.put("code",Wxish5Constants.API_ACESS_SUCCESS_FLAG);
             responseMsgJson.put("message","成功");
             responseMsgJson.put("time",System.currentTimeMillis());
             return responseMsgJson.toString();
         }catch (Exception e){
             LOGGER.error("网关处理异常:" + e);
-            responseMsgJson.put("code",1);
+            responseMsgJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
             responseMsgJson.put("message","处理异常:" + e);
             responseMsgJson.put("time",System.currentTimeMillis());
             return responseMsgJson.toString();

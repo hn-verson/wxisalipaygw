@@ -15,7 +15,6 @@ public class Wxish5Constants {
 
     /** 接口请求成功标记 **/
     public final static int API_ACESS_SUCCESS_FLAG = 0;
-
     /** 接口请求失败标记 **/
-    public final static int API_ACESS_FAILER_FLAG = 1;
+    public final static int API_ACESS_FAILER_FLAG = -1;
 }
