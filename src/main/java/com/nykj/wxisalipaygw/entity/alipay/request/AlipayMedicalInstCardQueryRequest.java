@@ -19,7 +19,7 @@ public class AlipayMedicalInstCardQueryRequest implements
     public Map<String, String> getTextParams() {
         AlipayHashMap txtParams = new AlipayHashMap();
         txtParams.put("buyer_id", this.buyerId);
-        txtParams.put("card_org_ no", this.cardOrgNo);
+        txtParams.put("card_org_no", this.cardOrgNo);
         if (udfParams != null) {
             txtParams.putAll(this.udfParams);
         }
@@ -109,4 +109,23 @@ public class AlipayMedicalInstCardQueryRequest implements
         return AlipaySystemOauthTokenResponse.class;
     }
 
+    @Override
+    public String getReturnUrl() {
+        return null;
+    }
+
+    @Override
+    public void setReturnUrl(String s) {
+
+    }
+
+    @Override
+    public boolean isNeedEncrypt() {
+        return false;
+    }
+
+    @Override
+    public void setNeedEncrypt(boolean b) {
+
+    }
 }

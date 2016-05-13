@@ -158,7 +158,7 @@ public class AlipayModel {
     public AlipayMedicalCard queryMedicalInstCard(JSONObject alipayBizBody) throws Exception{
         AlipayMedicalInstCardQueryRequest request = new AlipayMedicalInstCardQueryRequest();
         request.setBuyerId(alipayBizBody.getString("open_id"));
-        request.setCardOrgNo(alipayBizBody.getString("card_org_ no"));
+        request.setCardOrgNo(alipayBizBody.getString("card_org_no"));
 
         JSONObject unitLinkJson = (JSONObject)alipayBizBody.get("unit_link");
         UnitLink unitLink = (UnitLink)JSONObject.toBean(unitLinkJson,UnitLink.class);
