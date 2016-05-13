@@ -167,7 +167,7 @@ public class Wxish5Gateway extends BaseController {
                     return verifyResultJson;
                 }
             }else if(Wxish5Constants.ALIPAY_INST_CARD_QUERY_SERVICE.equals(service)){
-                String cardOrgNo = dataJson.getString("card_org_ no");
+                String cardOrgNo = dataJson.getString("card_org_no");
                 if(StringUtils.isEmpty(cardOrgNo)){
                     verifyResultJson.put("code",1);
                     verifyResultJson.put("message","卡颁发机构为空");
@@ -214,7 +214,7 @@ public class Wxish5Gateway extends BaseController {
         }else if(Wxish5Constants.ALIPAY_INST_CARD_QUERY_SERVICE.equals(service)){
             bizBodyJson.put("open_id",dataJson.getString("open_id"));
             bizBodyJson.put("refresh_token",dataJson.getString("refresh_token"));
-            bizBodyJson.put("card_org_ no",dataJson.getString("card_org_ no"));
+            bizBodyJson.put("card_org_no",dataJson.getString("card_org_no"));
         }
 
         return bizBodyJson;
