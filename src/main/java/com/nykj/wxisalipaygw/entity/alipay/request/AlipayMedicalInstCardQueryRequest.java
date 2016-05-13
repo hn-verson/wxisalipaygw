@@ -15,10 +15,6 @@ public class AlipayMedicalInstCardQueryRequest implements
     private String apiVersion = "1.0";
     private String buyerId;
     private String cardOrgNo;
-    private String terminalType;
-    private String terminalInfo;
-    private String prodCode;
-    private String notifyUrl;
 
     public Map<String, String> getTextParams() {
         AlipayHashMap txtParams = new AlipayHashMap();
@@ -71,42 +67,42 @@ public class AlipayMedicalInstCardQueryRequest implements
 
     @Override
     public String getTerminalType() {
-        return terminalType;
+        return null;
     }
 
     @Override
     public void setTerminalType(String terminalType) {
-        this.terminalType = terminalType;
+
     }
 
     @Override
     public String getTerminalInfo() {
-        return terminalInfo;
+        return null;
     }
 
     @Override
     public void setTerminalInfo(String terminalInfo) {
-        this.terminalInfo = terminalInfo;
+
     }
 
     @Override
     public String getProdCode() {
-        return prodCode;
+        return null;
     }
 
     @Override
     public void setProdCode(String prodCode) {
-        this.prodCode = prodCode;
+
     }
 
     @Override
     public String getNotifyUrl() {
-        return notifyUrl;
+        return null;
     }
 
     @Override
     public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
+
     }
 
     public Class<AlipaySystemOauthTokenResponse> getResponseClass() {

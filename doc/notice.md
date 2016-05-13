@@ -11,3 +11,5 @@
 >> url编码工具:
 >> http://tool.chinaz.com/Tools/urlencode.aspx
 
+> 支付宝解绑地址
+>> https://psbp.alipay.com/ins/instInitPage.htm

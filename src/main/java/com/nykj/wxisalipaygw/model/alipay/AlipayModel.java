@@ -9,10 +9,12 @@ import com.alipay.api.request.AlipayMobilePublicMessageCustomSendRequest;
 import com.alipay.api.response.AlipayMobilePublicMessageCustomSendResponse;
 import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
+import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardBindRequest;
 import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardQueryRequest;
 import com.nykj.wxisalipaygw.util.DateUtil;
+import com.nykj.wxisalipaygw.util.HttpUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
@@ -154,7 +156,7 @@ public class AlipayModel {
      * @return
      * @throws Exception
      */
-    public String buildMedicalInstCardQueryUrl(JSONObject alipayBizBody) throws Exception{
+    public AlipayMedicalCard queryMedicalInstCard(JSONObject alipayBizBody) throws Exception{
         AlipayMedicalInstCardQueryRequest request = new AlipayMedicalInstCardQueryRequest();
         request.setBuyerId(alipayBizBody.getString("open_id"));
         request.setCardOrgNo(alipayBizBody.getString("card_org_ no"));
@@ -165,8 +167,34 @@ public class AlipayModel {
         RequestParametersHolder requestHolder = buildAlipayRequestHolder(request,unitLink,alipayBizBody);
 
         StringBuilder baseUrl = new StringBuilder(unitLink.getAlipay_gateway());
+        String bizUrl = buildAlipayUrl(baseUrl,requestHolder,AlipayConstants.CHARSET_UTF8);
 
-        return buildAlipayUrl(baseUrl,requestHolder,AlipayConstants.CHARSET_UTF8);
+        //调用alipay系统接口，获取社保卡信息
+        String resultContent = HttpUtil.httpGet(bizUrl);
+        JSONObject resultContentJson = JSONObject.fromObject(resultContent);
+        JSONObject bizContentJson = resultContentJson.has("alipay_commerce_medical_card_query_response") ? (JSONObject) resultContentJson.get("alipay_commerce_medical_card_query_response") : null;
+
+        if(bizContentJson == null){
+            throw new Exception("查询医保卡信息异常,调用地址:" + bizUrl);
+        }
+
+        if(!bizContentJson.has("code") || !"10000".equals(bizContentJson.getString("code"))){
+            throw new Exception("查询医保卡信息失败:" + bizContentJson.getString("msg"));
+        }
+
+        AlipayMedicalCard alipayMedicalCard = new AlipayMedicalCard();
+        alipayMedicalCard.setBuyerLogonId(bizContentJson.getString("buyer_logon_id"));
+        alipayMedicalCard.setBuyerUserId(bizContentJson.getString("buyer_user_id"));
+        alipayMedicalCard.setCardOrgName(bizContentJson.getString("card_org_name"));
+        alipayMedicalCard.setCardOrgNo(bizContentJson.getString("card_org_no"));
+        alipayMedicalCard.setCity(bizContentJson.getString("city"));
+        alipayMedicalCard.setExtendParams(bizContentJson.getString("extend_params"));
+        alipayMedicalCard.setMedicalCardId(bizContentJson.getString("medical_card_id"));
+        alipayMedicalCard.setMedicalCardNo(bizContentJson.getString("medical_card_no"));
+        alipayMedicalCard.setMedicalCardType(bizContentJson.getString("medical_card_type"));
+        alipayMedicalCard.setSignStatus(bizContentJson.getString("sign_status"));
+
+        return alipayMedicalCard;
     }
 
     /**

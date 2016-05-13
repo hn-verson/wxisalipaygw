@@ -12,6 +12,7 @@ import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
+import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.model.alipay.AlipayModel;
@@ -240,9 +241,8 @@ public class AlipayService {
      * @return
      * @throws Exception
      */
-    public String buildMedicalInstCardQueryUrl(JSONObject alipayBizBody) throws Exception{
-        exchangeAccessToken(alipayBizBody);
-        return alipayModel.buildMedicalInstCardQueryUrl(alipayBizBody);
+    public AlipayMedicalCard queryMedicalInstCard(JSONObject alipayBizBody) throws Exception{
+        return alipayModel.queryMedicalInstCard(alipayBizBody);
     }
 
     /**

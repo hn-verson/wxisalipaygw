@@ -19,4 +19,7 @@ public class GlobalConstants {
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     /** 时间戳格式 **/
     public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+
+    /** UTF-8字符集名称 **/
+    public static final String CHARSET_UTF8 = "UTF-8";
 }

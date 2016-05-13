@@ -1,6 +1,7 @@
 package com.nykj.wxisalipaygw.controller;
 
 import com.nykj.wxisalipaygw.constants.Wxish5Constants;
+import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
@@ -74,11 +75,8 @@ public class Wxish5Gateway extends BaseController {
 
                 //支付宝社保卡查询服务
             }else if(Wxish5Constants.ALIPAY_INST_CARD_QUERY_SERVICE.equals(service)){
-                String medicalInstCardQueryUrl = alipayService.buildMedicalInstCardQueryUrl(bizBodyJson);
-                JSONObject resMedicalInstCardQueryUrl = new JSONObject();
-                resMedicalInstCardQueryUrl.put("url",medicalInstCardQueryUrl);
-                resMedicalInstCardQueryUrl.put("refresh_token",bizBodyJson.getString("refresh_token"));
-                responseMsgJson.put("data",resMedicalInstCardQueryUrl.toString());
+                AlipayMedicalCard alipayMedicalCard = alipayService.queryMedicalInstCard(bizBodyJson);
+                responseMsgJson.put("data",JSONObject.fromObject(alipayMedicalCard));
             }else{
                 responseMsgJson.put("code",1);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
