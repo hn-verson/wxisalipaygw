@@ -246,6 +246,37 @@ public class AlipayService {
     }
 
     /**
+     * 医保卡支付
+     * @param alipayBizBody
+     * @return
+     */
+    public String handlerMedicalCardPay(JSONObject alipayBizBody) throws Exception{
+        exchangeAccessToken(alipayBizBody);
+        //业务参数清洗
+        JSONObject bizParamJson = JSONObject.fromObject(alipayBizBody.toString());
+        if(bizParamJson.has("unit_id"))
+            bizParamJson.discard("unit_id");
+        if(bizParamJson.has("service"))
+            bizParamJson.discard("service");
+        if(bizParamJson.has("channel"))
+            bizParamJson.discard("channel");
+        if(bizParamJson.has("time")){
+            bizParamJson.put("timestamp",bizParamJson.getString("time"));
+            bizParamJson.discard("time");
+        }
+        if(bizParamJson.has("access_token")){
+            bizParamJson.put("access_token",bizParamJson.getString("access_token"));
+            bizParamJson.discard("refresh_token");
+        }
+        String resContent = alipayModel.handlerMedicalCardPay(bizParamJson);
+        JSONObject resContentJson = JSONObject.fromObject(resContent);
+        if(resContentJson.has("code") && AlipayEnvConstants.API_ACESS_SUCCESS_FLAG == resContentJson.getInt("code")){
+            throw new Exception(resContentJson.getString("message"));
+        }
+        return resContent;
+    }
+
+    /**
      * 获取访问令牌
      * @param alipayBizBody
      * @return

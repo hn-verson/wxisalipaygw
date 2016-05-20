@@ -1,7 +1,6 @@
 package com.nykj.wxisalipaygw.util;
 
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;

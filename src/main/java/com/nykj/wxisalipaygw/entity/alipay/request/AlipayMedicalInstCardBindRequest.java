@@ -114,4 +114,14 @@ public class AlipayMedicalInstCardBindRequest implements
         return AlipaySystemOauthTokenResponse.class;
     }
 
+    @Override
+    public boolean isNeedEncrypt() {
+        return false;
+    }
+
+    @Override
+    public void setNeedEncrypt(boolean b) {
+
+    }
+
 }

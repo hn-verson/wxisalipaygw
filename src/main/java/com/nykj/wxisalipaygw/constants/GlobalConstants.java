@@ -22,4 +22,7 @@ public class GlobalConstants {
 
     /** UTF-8字符集名称 **/
     public static final String CHARSET_UTF8 = "UTF-8";
+
+    /** HTTP请求内容类型 **/
+    public static final String REQUEST_CONTENT_TYPE = "application/json;charset=UTF-8";
 }

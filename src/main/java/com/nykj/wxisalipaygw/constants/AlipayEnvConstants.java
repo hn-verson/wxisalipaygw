@@ -57,4 +57,7 @@ public class AlipayEnvConstants {
     /** 渠道标识 **/
     public static int CHANNEL_ID = 2;
 
+    /** 接口请求成功标记 **/
+    public final static int API_ACESS_SUCCESS_FLAG = 0;
+
 }

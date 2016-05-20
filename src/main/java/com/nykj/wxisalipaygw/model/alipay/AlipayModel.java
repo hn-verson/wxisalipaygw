@@ -17,6 +17,7 @@ import com.nykj.wxisalipaygw.util.DateUtil;
 import com.nykj.wxisalipaygw.util.HttpUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import java.io.IOException;
 import java.util.Calendar;
@@ -28,6 +29,10 @@ import java.util.Date;
 @Repository
 public class AlipayModel {
     private static final Logger LOGGER = Logger.getLogger(AlipayModel.class);
+
+    @Value("#{config['alipay.api.medical.card.pay']}")
+    private String medicalCardPayApi;
+
     /**
      * 获得API调用客户端
      *
@@ -169,7 +174,7 @@ public class AlipayModel {
         String bizUrl = buildAlipayUrl(baseUrl,requestHolder,AlipayConstants.CHARSET_UTF8);
 
         //调用alipay系统接口，获取社保卡信息
-        String resultContent = HttpUtil.httpGet(bizUrl);
+        String resultContent = HttpUtil.httpGet(bizUrl,null,null);
         JSONObject resultContentJson = JSONObject.fromObject(resultContent);
         JSONObject bizContentJson = resultContentJson.has("alipay_commerce_medical_card_query_response") ? (JSONObject) resultContentJson.get("alipay_commerce_medical_card_query_response") : null;
 
@@ -275,6 +280,15 @@ public class AlipayModel {
             throw new AlipayApiException(e);
         }
         return baseUrl.toString();
+    }
+
+    /**
+     * 社保卡支付
+     * @param paramsJson
+     * @return
+     */
+    public String handlerMedicalCardPay(JSONObject paramsJson) throws Exception{
+        return HttpUtil.httpPost(medicalCardPayApi,paramsJson,GlobalConstants.REQUEST_CONTENT_TYPE);
     }
 
     /**
