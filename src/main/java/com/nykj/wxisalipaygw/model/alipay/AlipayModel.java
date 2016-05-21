@@ -151,7 +151,7 @@ public class AlipayModel {
 
         StringBuilder baseUrl = new StringBuilder(unitLink.getAlipay_gateway());
 
-        return buildAlipayUrl(baseUrl,requestHolder,AlipayConstants.CHARSET_UTF8);
+        return buildAlipayUrl(baseUrl,requestHolder,GlobalConstants.CHARSET_UTF8);
     }
 
     /**

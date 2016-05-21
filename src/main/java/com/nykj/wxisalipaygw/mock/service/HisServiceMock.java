@@ -37,4 +37,14 @@ public class HisServiceMock {
     public String mzFeeDetailQuery(JSONObject bizBody) throws Exception{
         return hisModelMock.mzFeeDetailQuery(null);
     }
+
+    /**
+     * 门诊缴费状态查询
+     * @param bizBody
+     * @return
+     * @throws Exception
+     */
+    public String mzFeeStateQuery(JSONObject bizBody) throws Exception{
+        return hisModelMock.mzFeeStateQuery(null);
+    }
 }

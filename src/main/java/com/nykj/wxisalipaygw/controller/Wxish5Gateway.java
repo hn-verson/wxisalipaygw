@@ -4,8 +4,6 @@ import com.nykj.wxisalipaygw.constants.Wxish5Constants;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
-import com.nykj.wxisalipaygw.mock.service.AlipayServiceMock;
-import com.nykj.wxisalipaygw.mock.service.HisServiceMock;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
 import com.nykj.wxisalipaygw.service.alipay.HisService;
 import com.nykj.wxisalipaygw.service.alipay.UnitInfoService;
@@ -39,13 +37,6 @@ public class Wxish5Gateway extends BaseController {
     @Autowired
     private UnitInfoService unitInfoService;
 
-    //TODO 测试完后,mock scene的代码需要删除，real scene的代码需要打开
-    @Autowired
-    private HisServiceMock hisServiceMock;
-
-    @Autowired
-    private AlipayServiceMock alipayServiceMock;
-
     @RequestMapping(value = "/wxish5", method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     @ResponseBody
     public String handler(HttpServletRequest request){
@@ -57,11 +48,10 @@ public class Wxish5Gateway extends BaseController {
         try{
             LOGGER.info("接收WXISH5请求:" + paramMap.toString());
 
-            //real scene
-            /*verifyResultJson = paramsVerify(paramMap);
+            verifyResultJson = paramsVerify(paramMap);
             if(verifyResultJson.has("code") && verifyResultJson.getInt("code") == Wxish5Constants.API_ACESS_FAILER_FLAG){
                 return verifyResultJson.toString();
-            }*/
+            }
 
             bizBodyJson = buildBizBody(paramMap);
             String projectBasePath = getProjectBasePath(request);
@@ -95,29 +85,23 @@ public class Wxish5Gateway extends BaseController {
 
                 //门诊待缴费记录列表查询
             }else if(Wxish5Constants.HIS_MZ_FEE_LIST_QUERY_SERVICE.equals(service)){
-                //real scene
-                /*String mzFeeDetailInfo = hisService.mzFeeListQuery(bizBodyJson);
-                responseMsgJson.put("data",mzFeeDetailInfo);*/
-
-                //mock scene
-                return hisServiceMock.mzFeeListQuery(bizBodyJson);
+                String mzFeeListInfo = hisService.mzFeeListQuery(bizBodyJson);
+                responseMsgJson.put("data",mzFeeListInfo);
 
                 //门诊待缴费记录明细查询
             }else if(Wxish5Constants.HIS_MZ_FEE_DETAIL_QUERY_SERVICE.equals(service)){
-                //real scene
-                /*String mzFeeDetailInfo = hisService.mzFeeDetailQuery(bizBodyJson);
-                responseMsgJson.put("data",mzFeeDetailInfo);*/
+                String mzFeeDetailInfo = hisService.mzFeeDetailQuery(bizBodyJson);
+                responseMsgJson.put("data",mzFeeDetailInfo);
 
-                //mock scene
-                return hisServiceMock.mzFeeDetailQuery(null);
+                //门诊缴费清单状态查询
+            }else if(Wxish5Constants.HIS_MZ_FEE_STATE_QUERY_SERVICE.equals(service)){
+                String mzFeeStateInfo = hisService.mzFeeStateQuery(bizBodyJson);
+                responseMsgJson.put("data",mzFeeStateInfo);
 
                 //社保支付
             }else if(Wxish5Constants.ALIPAY_MEDICAL_CARD_PAY_SERVICE.equals(service)){
-                //real scene
-                /*alipayService.handlerMedicalCardPay(bizBodyJson);*/
+                alipayService.handlerMedicalCardPay(bizBodyJson);
 
-                //mock scene
-                return alipayServiceMock.handlerMedicalCardPay(JSONObject.fromObject(paramMap.get("data")));
             }else{
                 responseMsgJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
@@ -202,9 +186,10 @@ public class Wxish5Gateway extends BaseController {
                 return verifyResultJson;
             if(!isExistsParam(dataJson,"end_time",verifyResultJson,"结束时间为空"))
                 return verifyResultJson;
+        }else if(Wxish5Constants.HIS_MZ_FEE_STATE_QUERY_SERVICE.equals(service)){
+            //TODO 待HIS接口确定后填充
         }else if(Wxish5Constants.ALIPAY_MEDICAL_CARD_PAY_SERVICE.equals(service)){
-            //real scene
-            /*if(!isExistsParam(dataJson,"return_url",verifyResultJson,"页面跳转地址为空"))
+            if(!isExistsParam(dataJson,"return_url",verifyResultJson,"页面跳转地址为空"))
                 return verifyResultJson;
             if(!isExistsParam(dataJson,"notify_url",verifyResultJson,"结果通知地址为空"))
                 return verifyResultJson;
@@ -233,7 +218,7 @@ public class Wxish5Gateway extends BaseController {
             if(!isExistsParam(dataJson,"gmt_out_create",verifyResultJson,"外部下单时间为空"))
                 return verifyResultJson;
             if(!isExistsParam(dataJson,"is_insurance",verifyResultJson,"是否允许医保为空"))
-                return verifyResultJson;*/
+                return verifyResultJson;
         }else{
             verifyResultJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
             verifyResultJson.put("message","未标识的服务:" + service);
@@ -295,27 +280,24 @@ public class Wxish5Gateway extends BaseController {
             bizBodyJson.put("refresh_token",dataJson.getString("refresh_token"));
             bizBodyJson.put("card_org_no",dataJson.getString("card_org_no"));
         }else if(Wxish5Constants.HIS_MZ_FEE_LIST_QUERY_SERVICE.equals(service)){
-            //real scene
-            /*bizBodyJson.put("card_no",dataJson.getString("card_no"));
+            bizBodyJson.put("card_no",dataJson.getString("card_no"));
             bizBodyJson.put("begin_time",dataJson.getString("begin_time"));
             bizBodyJson.put("end_time",dataJson.getString("end_time"));
             if(dataJson.has("branch_code"))
-                bizBodyJson.put("branch_code",dataJson.getString("branch_code"));*/
+                bizBodyJson.put("branch_code",dataJson.getString("branch_code"));
 
-            //mock scene
-            bizBodyJson.put("pay_status",dataJson.getString("pay_status"));
         }else if(Wxish5Constants.HIS_MZ_FEE_DETAIL_QUERY_SERVICE.equals(service)){
-            //real scene
-            /*bizBodyJson.put("card_no",dataJson.getString("card_no"));
+            bizBodyJson.put("card_no",dataJson.getString("card_no"));
             bizBodyJson.put("begin_time",dataJson.getString("begin_time"));
             bizBodyJson.put("end_time",dataJson.getString("end_time"));
             if(dataJson.has("branch_code"))
-                bizBodyJson.put("branch_code",dataJson.getString("branch_code"));*/
+                bizBodyJson.put("branch_code",dataJson.getString("branch_code"));
+        }else if(Wxish5Constants.HIS_MZ_FEE_STATE_QUERY_SERVICE.equals(service)){
+            //TODO 待HIS接口确认后填充
         }else if(Wxish5Constants.ALIPAY_MEDICAL_CARD_PAY_SERVICE.equals(service)){
 
             //MUST PARAMS
-            //real scene
-            /*bizBodyJson.put("return_url",dataJson.getString("return_url"));
+            bizBodyJson.put("return_url",dataJson.getString("return_url"));
             bizBodyJson.put("notify_url",dataJson.getString("notify_url"));
             bizBodyJson.put("refresh_token",dataJson.getString("refresh_token"));
             bizBodyJson.put("scene",dataJson.getString("scene"));
@@ -329,11 +311,10 @@ public class Wxish5Gateway extends BaseController {
             bizBodyJson.put("org_name",dataJson.getString("org_name"));
             bizBodyJson.put("serial_no",dataJson.getString("serial_no"));
             bizBodyJson.put("gmt_out_create",dataJson.getString("gmt_out_create"));
-            bizBodyJson.put("is_insurance",dataJson.getString("is_insurance"));*/
+            bizBodyJson.put("is_insurance",dataJson.getString("is_insurance"));
 
             //OPTION PARAMS
-            //real scene
-            /*if(dataJson.has("body"))
+            if(dataJson.has("body"))
                 bizBodyJson.put("body",dataJson.getString("body"));
             if(dataJson.has("extend_params"))
                 bizBodyJson.put("extend_params",dataJson.getString("extend_params"));
@@ -346,7 +327,7 @@ public class Wxish5Gateway extends BaseController {
             if(dataJson.has("patient_name"))
                 bizBodyJson.put("patient_name",dataJson.getString("patient_name"));
             if(dataJson.has("patient_mobile"))
-                bizBodyJson.put("patient_mobile",dataJson.getString("patient_mobile"));*/
+                bizBodyJson.put("patient_mobile",dataJson.getString("patient_mobile"));
 
         }
 

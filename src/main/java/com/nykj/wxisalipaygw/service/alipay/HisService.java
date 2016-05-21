@@ -57,4 +57,19 @@ public class HisService {
         }
         return hisModel.mzFeeDetailQuery(paramsJson);
     }
+
+    /**
+     * 门诊缴费状态查询
+     * @param bizBody
+     * @return
+     * @throws Exception
+     */
+    public String mzFeeStateQuery(JSONObject bizBody) throws Exception{
+        if(bizBody == null){
+            throw new Exception("门诊待缴费记录明细查询业务参数为空");
+        }
+        JSONObject paramsJson = new JSONObject();
+        //TODO 请求接口参数的组装
+        return hisModel.mzFeeStateQuery(paramsJson);
+    }
 }

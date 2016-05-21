@@ -20,13 +20,16 @@ public class HisModel {
     @Value("#{config['his.api.mz.fee.detail.query']}")
     private String mzFeeDetailApi;
 
+    @Value("#{config['his.api.mz.fee.state.query']}")
+    private String mzFeeStateApi;
+
     /**
      * 门诊待缴费记录列表查询
      * @param paramsJson
      * @return
      */
     public String mzFeeListQuery(JSONObject paramsJson) throws Exception{
-        return HttpUtil.httpPost(mzFeeDetailApi,paramsJson, HisConstants.REQUEST_CONTENT_TYPE);
+        return HttpUtil.httpPost(mzFeeListApi,paramsJson, HisConstants.REQUEST_CONTENT_TYPE);
     }
 
     /**
@@ -36,5 +39,9 @@ public class HisModel {
      */
     public String mzFeeDetailQuery(JSONObject paramsJson) throws Exception{
         return HttpUtil.httpPost(mzFeeDetailApi,paramsJson, HisConstants.REQUEST_CONTENT_TYPE);
+    }
+
+    public String mzFeeStateQuery(JSONObject paramsJson) throws Exception{
+        return HttpUtil.httpPost(mzFeeStateApi,paramsJson, HisConstants.REQUEST_CONTENT_TYPE);
     }
 }
