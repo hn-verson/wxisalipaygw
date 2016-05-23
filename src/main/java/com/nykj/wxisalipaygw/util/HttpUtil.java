@@ -2,10 +2,12 @@ package com.nykj.wxisalipaygw.util;
 
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
 import com.nykj.wxisalipaygw.constants.StatusCode;
+import com.nykj.wxisalipaygw.exception.ApiCallException;
 import com.nykj.wxisalipaygw.exception.ArgumentException;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -60,6 +62,9 @@ public class HttpUtil {
         CloseableHttpResponse response = httpClient.execute(httpGet);
         String resContent = null;
         try {
+            if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
+                throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"GET接口调用失败");
+            }
             resContent = extractContent(response.getEntity());
         } finally {
             response.close();
@@ -91,6 +96,9 @@ public class HttpUtil {
         CloseableHttpResponse response = httpClient.execute(httpPost);
         String resContent = null;
         try {
+            if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
+                throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"POST接口调用失败");
+            }
             resContent = extractContent(response.getEntity());
         } finally {
             response.close();
