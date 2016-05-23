@@ -26,7 +26,7 @@ public class HisService {
      */
     public String mzFeeListQuery(JSONObject bizBody) throws Exception{
         if(bizBody == null){
-            throw new Exception("门诊待缴费记录列表查询业务参数为空");
+            throw new NullPointerException("门诊待缴费记录列表查询业务参数为空");
         }
         JSONObject paramsJson = new JSONObject();
         paramsJson.put("card_no",bizBody.getString("card_no"));
@@ -46,7 +46,7 @@ public class HisService {
      */
     public String mzFeeDetailQuery(JSONObject bizBody) throws Exception{
         if(bizBody == null){
-            throw new Exception("门诊待缴费记录明细查询业务参数为空");
+            throw new NullPointerException("门诊待缴费记录明细查询业务参数为空");
         }
         JSONObject paramsJson = new JSONObject();
         paramsJson.put("card_no",bizBody.getString("card_no"));
@@ -66,7 +66,7 @@ public class HisService {
      */
     public String mzFeeStateQuery(JSONObject bizBody) throws Exception{
         if(bizBody == null){
-            throw new Exception("门诊待缴费记录明细查询业务参数为空");
+            throw new NullPointerException("门诊待缴费记录明细查询业务参数为空");
         }
         JSONObject paramsJson = new JSONObject();
         //TODO 请求接口参数的组装

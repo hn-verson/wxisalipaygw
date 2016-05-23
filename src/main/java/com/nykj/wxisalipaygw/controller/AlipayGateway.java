@@ -1,12 +1,9 @@
-/**
- * Alipay.com Inc.
- * Copyright (c) 2004-2014 All Rights Reserved.
- */
 package com.nykj.wxisalipaygw.controller;
 
-import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.StringUtils;
+import com.nykj.wxisalipaygw.constants.StatusCode;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
+import com.nykj.wxisalipaygw.exception.ArgumentException;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
 import com.nykj.wxisalipaygw.service.alipay.UnitInfoService;
 import net.sf.json.JSONObject;
@@ -27,7 +24,7 @@ import java.util.Map;
 /**
  * 开发者网关，支付宝所有主动和开发者的交互会经过此网关进入开发者系统
  *
- * @author verson
+ * @author Verson
  */
 @Controller
 @Scope("prototype")
@@ -83,10 +80,8 @@ public class AlipayGateway extends BaseController {
 
             alipayBizBody.put("response_msg",responseMsg);
 
-        } catch (AlipayApiException e) {
-            LOGGER.error("应用网关执行异常:" + e);
         } catch (Exception e) {
-            LOGGER.error("应用网关执行异常:" + e);
+            LOGGER.error("支付宝回调网关执行异常:" + e);
         } finally {
             //4. 响应结果加签及返回
             try {
@@ -110,6 +105,7 @@ public class AlipayGateway extends BaseController {
     public String alipayBizHandlerCallBack(@PathVariable(value = "channel") String channel,
                                          @PathVariable(value = "unit_id") String unitId,
                                          HttpServletRequest request){
+        //TODO 后续可能会涉及到支付宝业务回调网关的情况
         Map<String,String> params = null;
         JSONObject alipayBizBody = null;
         try {
@@ -136,13 +132,13 @@ public class AlipayGateway extends BaseController {
         //获取服务信息
         String service = params.get("service");
         if (StringUtils.isEmpty(service)) {
-            throw new Exception("无法取得服务名");
+            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"无法取得服务名");
         }
 
         //获取内容信息
         String bizContent = params.get("biz_content");
         if (StringUtils.isEmpty(bizContent)) {
-            throw new Exception("无法取得业务内容信息");
+            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"无法取得业务内容信息");
         }
 
         JSONObject bizContentJson = (JSONObject) new XMLSerializer().read(bizContent);

@@ -1,6 +1,8 @@
 package com.nykj.wxisalipaygw.util;
 
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
+import com.nykj.wxisalipaygw.constants.StatusCode;
+import com.nykj.wxisalipaygw.exception.ArgumentException;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -32,7 +34,7 @@ public class HttpUtil {
      */
     public static String httpGet(String url,JSONObject paramsJson,String contentType) throws Exception{
         if(StringUtils.isEmpty(url)){
-            throw new Exception("请求的url为空");
+            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"请求的url为空");
         }
 
         StringBuilder combineUrl = new StringBuilder(url);
@@ -76,7 +78,7 @@ public class HttpUtil {
      */
     public static String httpPost(String url, JSONObject paramsJson,String contentType) throws Exception{
         if(StringUtils.isEmpty(url)){
-            throw new Exception("请求的url为空");
+            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"请求的url为空");
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);

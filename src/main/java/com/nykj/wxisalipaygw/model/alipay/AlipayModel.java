@@ -9,17 +9,18 @@ import com.alipay.api.request.AlipayMobilePublicMessageCustomSendRequest;
 import com.alipay.api.response.AlipayMobilePublicMessageCustomSendResponse;
 import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
+import com.nykj.wxisalipaygw.constants.StatusCode;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardBindRequest;
 import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardQueryRequest;
+import com.nykj.wxisalipaygw.exception.ApiCallException;
 import com.nykj.wxisalipaygw.util.DateUtil;
 import com.nykj.wxisalipaygw.util.HttpUtil;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -179,11 +180,11 @@ public class AlipayModel {
         JSONObject bizContentJson = resultContentJson.has("alipay_commerce_medical_card_query_response") ? (JSONObject) resultContentJson.get("alipay_commerce_medical_card_query_response") : null;
 
         if(bizContentJson == null){
-            throw new Exception("查询医保卡信息异常,调用地址:" + bizUrl);
+            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"查询医保卡信息异常,调用地址:" + bizUrl);
         }
 
         if(!bizContentJson.has("code") || !"10000".equals(bizContentJson.getString("code"))){
-            throw new Exception("查询医保卡信息失败:" + bizContentJson.getString("msg"));
+            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"查询医保卡信息失败:" + bizContentJson.getString("msg"));
         }
 
         AlipayMedicalCard alipayMedicalCard = new AlipayMedicalCard();
@@ -257,27 +258,23 @@ public class AlipayModel {
      * @return
      */
     public String buildAlipayUrl(StringBuilder baseUrl,RequestParametersHolder requestHolder,String charset) throws Exception{
-        try {
-            String sysMustQuery = WebUtils.buildQuery(requestHolder.getProtocalMustParams(),
-                    charset);
-            String sysOptQuery = WebUtils.buildQuery(requestHolder.getProtocalOptParams(), charset);
+        String sysMustQuery = WebUtils.buildQuery(requestHolder.getProtocalMustParams(),
+                charset);
+        String sysOptQuery = WebUtils.buildQuery(requestHolder.getProtocalOptParams(), charset);
 
-            String applicationParams = WebUtils.buildQuery(requestHolder.getApplicationParams(),
-                    charset);
+        String applicationParams = WebUtils.buildQuery(requestHolder.getApplicationParams(),
+                charset);
 
-            baseUrl.append("?");
-            baseUrl.append(sysMustQuery);
-            if (sysOptQuery != null & sysOptQuery.length() > 0) {
-                baseUrl.append("&");
-                baseUrl.append(sysOptQuery);
-            }
+        baseUrl.append("?");
+        baseUrl.append(sysMustQuery);
+        if (sysOptQuery != null & sysOptQuery.length() > 0) {
+            baseUrl.append("&");
+            baseUrl.append(sysOptQuery);
+        }
 
-            if (applicationParams != null & applicationParams.length() > 0) {
-                baseUrl.append("&");
-                baseUrl.append(applicationParams);
-            }
-        } catch (IOException e) {
-            throw new AlipayApiException(e);
+        if (applicationParams != null & applicationParams.length() > 0) {
+            baseUrl.append("&");
+            baseUrl.append(applicationParams);
         }
         return baseUrl.toString();
     }

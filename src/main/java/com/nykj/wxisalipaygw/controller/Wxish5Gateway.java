@@ -1,9 +1,11 @@
 package com.nykj.wxisalipaygw.controller;
 
+import com.nykj.wxisalipaygw.constants.StatusCode;
 import com.nykj.wxisalipaygw.constants.Wxish5Constants;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
+import com.nykj.wxisalipaygw.exception.BaseException;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
 import com.nykj.wxisalipaygw.service.alipay.HisService;
 import com.nykj.wxisalipaygw.service.alipay.UnitInfoService;
@@ -49,7 +51,7 @@ public class Wxish5Gateway extends BaseController {
             LOGGER.info("接收WXISH5请求:" + paramMap.toString());
 
             verifyResultJson = paramsVerify(paramMap);
-            if(verifyResultJson.has("code") && verifyResultJson.getInt("code") == Wxish5Constants.API_ACESS_FAILER_FLAG){
+            if(verifyResultJson.has("code") && verifyResultJson.getInt("code") == StatusCode.SUCCESS){
                 return verifyResultJson.toString();
             }
 
@@ -103,19 +105,24 @@ public class Wxish5Gateway extends BaseController {
                 alipayService.handlerMedicalCardPay(bizBodyJson);
 
             }else{
-                responseMsgJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
+                responseMsgJson.put("code",StatusCode.SUCCESS);
                 responseMsgJson.put("message","未知的服务参数【" + service + "】");
                 responseMsgJson.put("time",System.currentTimeMillis());
                 return responseMsgJson.toString();
             }
-            responseMsgJson.put("code",Wxish5Constants.API_ACESS_SUCCESS_FLAG);
+            responseMsgJson.put("code",StatusCode.SUCCESS);
             responseMsgJson.put("message","成功");
             responseMsgJson.put("time",System.currentTimeMillis());
             return responseMsgJson.toString();
         }catch (Exception e){
-            LOGGER.error("网关处理异常:" + e);
-            responseMsgJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
-            responseMsgJson.put("message","处理异常:" + e);
+            LOGGER.error("WXISH5网关处理异常:" + e);
+            if(e instanceof BaseException){
+                responseMsgJson.put("code",((BaseException) e).getCode());
+                responseMsgJson.put("message","处理异常:" + e.getMessage());
+            }else{
+                responseMsgJson.put("code", StatusCode.INTERNEL_SERVER_EXCEPTION);
+                responseMsgJson.put("message","内部服务异常");
+            }
             responseMsgJson.put("time",System.currentTimeMillis());
             return responseMsgJson.toString();
         }finally {
@@ -135,17 +142,17 @@ public class Wxish5Gateway extends BaseController {
         String data = paramMap.get("data");
         String time = paramMap.get("time");
         if(StringUtils.isEmpty(service)){
-            verifyResultJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
+            verifyResultJson.put("code",StatusCode.SUCCESS);
             verifyResultJson.put("message","服务参数为空");
             return verifyResultJson;
         }
         if(StringUtils.isEmpty(data)){
-            verifyResultJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
+            verifyResultJson.put("code",StatusCode.SUCCESS);
             verifyResultJson.put("message","业务参数为空");
             return verifyResultJson;
         }
         if(StringUtils.isEmpty(time)){
-            verifyResultJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
+            verifyResultJson.put("code",StatusCode.SUCCESS);
             verifyResultJson.put("message","请求时间为空");
             return verifyResultJson;
         }
@@ -220,7 +227,7 @@ public class Wxish5Gateway extends BaseController {
             if(!isExistsParam(dataJson,"is_insurance",verifyResultJson,"是否允许医保为空"))
                 return verifyResultJson;
         }else{
-            verifyResultJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
+            verifyResultJson.put("code",StatusCode.SUCCESS);
             verifyResultJson.put("message","未标识的服务:" + service);
             return verifyResultJson;
         }
@@ -239,7 +246,7 @@ public class Wxish5Gateway extends BaseController {
             return false;
         }
         if(!dataJson.has(paramName)){
-            verifyResultJson.put("code",Wxish5Constants.API_ACESS_FAILER_FLAG);
+            verifyResultJson.put("code",StatusCode.SUCCESS);
             verifyResultJson.put("message",omitDesc);
             return false;
         }

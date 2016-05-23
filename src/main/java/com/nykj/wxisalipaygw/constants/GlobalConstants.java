@@ -9,7 +9,7 @@ public class GlobalConstants {
     /** 管理后台项目根目录 **/
     public static final String MANAGE_PROJECT_BASE_PATH = "";
     /** 线程池大小 **/
-    public static final int THREAD_POOL_MAX_SIZE = 10;
+    public static final int THREAD_POOL_MAX_SIZE = 1000;
 
     /** 日期时区 **/
     public static final String DATE_TIMEZONE = "GMT+8";
