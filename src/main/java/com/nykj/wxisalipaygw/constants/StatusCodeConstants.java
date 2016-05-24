@@ -3,7 +3,7 @@ package com.nykj.wxisalipaygw.constants;
 /**
  * Created by Verson on 2016/5/23.
  */
-public class StatusCode {
+public class StatusCodeConstants {
     /** 成功 **/
     public final static int SUCCESS = 0;
     /** 参数异常 **/

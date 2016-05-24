@@ -1,7 +1,7 @@
 package com.nykj.wxisalipaygw.util;
 
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
-import com.nykj.wxisalipaygw.constants.StatusCode;
+import com.nykj.wxisalipaygw.constants.StatusCodeConstants;
 import com.nykj.wxisalipaygw.exception.ApiCallException;
 import com.nykj.wxisalipaygw.exception.ArgumentException;
 import net.sf.json.JSONObject;
@@ -36,7 +36,7 @@ public class HttpUtil {
      */
     public static String httpGet(String url,JSONObject paramsJson,String contentType) throws Exception{
         if(StringUtils.isEmpty(url)){
-            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"请求的url为空");
+            throw new ArgumentException(StatusCodeConstants.ARGUMENT_EXCEPTION,"请求的url为空");
         }
 
         StringBuilder combineUrl = new StringBuilder(url);
@@ -63,7 +63,7 @@ public class HttpUtil {
         String resContent = null;
         try {
             if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
-                throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"GET接口调用失败");
+                throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"GET接口调用失败");
             }
             resContent = extractContent(response.getEntity());
         } finally {
@@ -83,7 +83,7 @@ public class HttpUtil {
      */
     public static String httpPost(String url, JSONObject paramsJson,String contentType) throws Exception{
         if(StringUtils.isEmpty(url)){
-            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"请求的url为空");
+            throw new ArgumentException(StatusCodeConstants.ARGUMENT_EXCEPTION,"请求的url为空");
         }
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
@@ -97,7 +97,7 @@ public class HttpUtil {
         String resContent = null;
         try {
             if(response.getStatusLine().getStatusCode() != HttpStatus.SC_OK){
-                throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"POST接口调用失败");
+                throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"POST接口调用失败");
             }
             resContent = extractContent(response.getEntity());
         } finally {

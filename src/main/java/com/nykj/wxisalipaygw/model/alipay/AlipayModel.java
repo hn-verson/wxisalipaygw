@@ -9,7 +9,7 @@ import com.alipay.api.request.AlipayMobilePublicMessageCustomSendRequest;
 import com.alipay.api.response.AlipayMobilePublicMessageCustomSendResponse;
 import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
-import com.nykj.wxisalipaygw.constants.StatusCode;
+import com.nykj.wxisalipaygw.constants.StatusCodeConstants;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.entity.alipay.request.AlipayMedicalInstCardBindRequest;
@@ -180,11 +180,11 @@ public class AlipayModel {
         JSONObject bizContentJson = resultContentJson.has("alipay_commerce_medical_card_query_response") ? (JSONObject) resultContentJson.get("alipay_commerce_medical_card_query_response") : null;
 
         if(bizContentJson == null){
-            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"查询医保卡信息异常,调用地址:" + bizUrl);
+            throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"查询医保卡信息异常,调用地址:" + bizUrl);
         }
 
         if(!bizContentJson.has("code") || !"10000".equals(bizContentJson.getString("code"))){
-            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"查询医保卡信息失败:" + bizContentJson.getString("msg"));
+            throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"查询医保卡信息失败:" + bizContentJson.getString("msg"));
         }
 
         AlipayMedicalCard alipayMedicalCard = new AlipayMedicalCard();

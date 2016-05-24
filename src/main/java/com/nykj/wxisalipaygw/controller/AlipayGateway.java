@@ -1,7 +1,7 @@
 package com.nykj.wxisalipaygw.controller;
 
 import com.alipay.api.internal.util.StringUtils;
-import com.nykj.wxisalipaygw.constants.StatusCode;
+import com.nykj.wxisalipaygw.constants.StatusCodeConstants;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
 import com.nykj.wxisalipaygw.exception.ArgumentException;
 import com.nykj.wxisalipaygw.service.alipay.AlipayService;
@@ -132,13 +132,13 @@ public class AlipayGateway extends BaseController {
         //获取服务信息
         String service = params.get("service");
         if (StringUtils.isEmpty(service)) {
-            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"无法取得服务名");
+            throw new ArgumentException(StatusCodeConstants.ARGUMENT_EXCEPTION,"无法取得服务名");
         }
 
         //获取内容信息
         String bizContent = params.get("biz_content");
         if (StringUtils.isEmpty(bizContent)) {
-            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"无法取得业务内容信息");
+            throw new ArgumentException(StatusCodeConstants.ARGUMENT_EXCEPTION,"无法取得业务内容信息");
         }
 
         JSONObject bizContentJson = (JSONObject) new XMLSerializer().read(bizContent);

@@ -11,7 +11,7 @@ import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserUserinfoShareResponse;
 import com.nykj.wxisalipaygw.constants.AlipayEnvConstants;
 import com.nykj.wxisalipaygw.constants.GlobalConstants;
-import com.nykj.wxisalipaygw.constants.StatusCode;
+import com.nykj.wxisalipaygw.constants.StatusCodeConstants;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayMedicalCard;
 import com.nykj.wxisalipaygw.entity.alipay.AlipayUserInfo;
 import com.nykj.wxisalipaygw.entity.alipay.UnitLink;
@@ -63,7 +63,7 @@ public class AlipayService {
 
         JSONObject bizContentJson = (JSONObject) alipayBizBody.get("biz_content");
         if (!bizContentJson.has("MsgType")) {
-            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"无法取得消息类型");
+            throw new ArgumentException(StatusCodeConstants.ARGUMENT_EXCEPTION,"无法取得消息类型");
         }
 
         String msgType = bizContentJson.getString("MsgType");
@@ -163,7 +163,7 @@ public class AlipayService {
             AlipayClient alipayClient = alipayModel.getAlipayClient(unitLink);
             if(alipayClient == null){
                 LOGGER.info("获取医院【"+unitLink.getUnit_id()+"】的服务窗客户端失败");
-                throw new DatabaseAccessException(StatusCode.DATABASE_ACCESS_EXCEPTION,"无法获取医院【"+unitLink.getUnit_id()+"】配置");
+                throw new DatabaseAccessException(StatusCodeConstants.DATABASE_ACCESS_EXCEPTION,"无法获取医院【"+unitLink.getUnit_id()+"】配置");
             }
 
             AlipaySystemOauthTokenResponse oauthTokenResponse = alipayClient.execute(oauthTokenRequest);
@@ -174,7 +174,7 @@ public class AlipayService {
                 userinfoShareResponse = alipayClient.execute(userinfoShareRequest, oauthTokenResponse.getAccessToken());
                 //成功获得用户信息
                 if(userinfoShareResponse == null || userinfoShareResponse.isSuccess()){
-                    throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"获取支付宝用户信息失败");
+                    throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"获取支付宝用户信息失败");
                 }
                 alipayUserInfo = new AlipayUserInfo();
                 alipayUserInfo.setAvatar(userinfoShareResponse.getAvatar());
@@ -215,7 +215,7 @@ public class AlipayService {
         AlipayMobilePublicGisGetResponse gisGetResponse = null ;
         gisGetResponse = alipayClient.execute(gisGetRequest);
         if(gisGetResponse == null || !gisGetResponse.isSuccess()){
-            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"获取用户【"+openId+"】的地理位置失败");
+            throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"获取用户【"+openId+"】的地理位置失败");
         }
         gisJson.put("longitude",gisGetResponse.getLongitude());
         gisJson.put("latitude",gisGetResponse.getLatitude());
@@ -272,7 +272,7 @@ public class AlipayService {
         String resContent = alipayModel.handlerMedicalCardPay(bizParamJson);
         JSONObject resContentJson = JSONObject.fromObject(resContent);
         if(resContentJson.has("code") && AlipayEnvConstants.API_ACESS_SUCCESS_FLAG == resContentJson.getInt("code")){
-            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,resContentJson.getString("message"));
+            throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,resContentJson.getString("message"));
         }
         return resContent;
     }
@@ -285,7 +285,7 @@ public class AlipayService {
      */
     public void exchangeAccessToken(JSONObject alipayBizBody) throws Exception{
         if(!alipayBizBody.has("auth_code") && !alipayBizBody.has("refresh_token")){
-            throw new ArgumentException(StatusCode.ARGUMENT_EXCEPTION,"缺失授权码或刷新令牌");
+            throw new ArgumentException(StatusCodeConstants.ARGUMENT_EXCEPTION,"缺失授权码或刷新令牌");
         }
         String authCode = alipayBizBody.has("auth_code") ? alipayBizBody.getString("auth_code") : null;
         String refreshToken = alipayBizBody.has("refresh_token") ? alipayBizBody.getString("refresh_token") : null;
@@ -303,7 +303,7 @@ public class AlipayService {
         }
         AlipaySystemOauthTokenResponse response = alipayClient.execute(request);
         if(request == null || !response.isSuccess()){
-            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"获取访问令牌失败");
+            throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"获取访问令牌失败");
         }
 
         //需要重置业务体refresh_token和access_token值
@@ -323,14 +323,14 @@ public class AlipayService {
         UnitLink unitLink = (UnitLink) JSONObject.toBean(unitLinkJsonObj,UnitLink.class);
 
         if(unitLink == null){
-            throw new DatabaseAccessException(StatusCode.API_CALL_EXCEPTION,"未获取医院服务窗配置，验签失败");
+            throw new DatabaseAccessException(StatusCodeConstants.API_CALL_EXCEPTION,"未获取医院服务窗配置，验签失败");
         }
 
         //医院对应服务窗配置信息从业务体中获取
         if (!AlipaySignature.rsaCheckV2(paramsMap, unitLink.getAlipay_public_key(),
                 AlipayEnvConstants.SIGN_CHARSET)) {
 
-            throw new ApiCallException(StatusCode.API_CALL_EXCEPTION,"验签失败");
+            throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"验签失败");
         }
     }
 
