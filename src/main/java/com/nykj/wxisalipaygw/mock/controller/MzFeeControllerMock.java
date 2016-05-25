@@ -6,6 +6,8 @@ import com.nykj.wxisalipaygw.mock.service.HisServiceMock;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +17,9 @@ import java.util.Map;
 /**
  * Created by Verson on 2016/5/24.
  */
+@Controller
+@Scope("prototype")
+@RequestMapping("/gateway/wxish5")
 public class MzFeeControllerMock extends BaseController {
     private final static Logger LOGGER = Logger.getLogger(MzFeeControllerMock.class);
 

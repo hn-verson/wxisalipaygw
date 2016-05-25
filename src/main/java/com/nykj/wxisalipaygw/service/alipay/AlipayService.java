@@ -173,7 +173,7 @@ public class AlipayService {
                 String refreshToken = oauthTokenResponse.getRefreshToken();
                 userinfoShareResponse = alipayClient.execute(userinfoShareRequest, oauthTokenResponse.getAccessToken());
                 //成功获得用户信息
-                if(userinfoShareResponse == null || userinfoShareResponse.isSuccess()){
+                if(userinfoShareResponse == null || !userinfoShareResponse.isSuccess()){
                     throw new ApiCallException(StatusCodeConstants.API_CALL_EXCEPTION,"获取支付宝用户信息失败");
                 }
                 alipayUserInfo = new AlipayUserInfo();
